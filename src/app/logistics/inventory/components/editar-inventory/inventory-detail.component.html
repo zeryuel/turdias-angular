@@ -1,0 +1,82 @@
+<div class="modal-header">
+  <div class="modal-title"><i class="fa-brands fa-artstation"></i> EDITAR DETALLE</div>
+  <button type="button" (click)="bsModalRef.hide()" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+
+  <div class="modal-body">
+
+    <div [formGroup]="model">
+
+      <div class="row">
+        <div formGroupName="costCenter" class="col-12">
+          <label for="name">ALMACÉN</label>
+          <input formControlName="name" id="costCenterName" type="text" class="form-control form-control-sm bg-custom" readonly>
+        </div>
+      </div>
+
+      <div class="row" style="margin-top: .8rem;">
+        <div class="col-auto"><label style="font-size: 0.65rem; color: #6785B8;"><b>INFORMACIÓN DEL PRODUCTO</b></label></div>
+        <div class="col"><hr></div>
+      </div>
+
+      <div class="row">
+
+        <div class="col-12" formGroupName="item">
+          <label for="id" class="col-1">CÓDIGO</label>
+          <label for="name" class="col-7">PRODUCTO</label>
+          <label for="brand" class="col-2">MARCA</label>
+          <label for="unidadMedida" class="col-2">UND. MEDIDA</label>
+          <div class="input-group">
+            <input formControlName="id" id="itemId" type="text" class="form-control form-control-sm" readonly
+              [ngClass]="{'is-invalid': model.get('item')?.get('id')?.errors && model.get('item')?.get('id')?.touched}" />
+
+            <input formControlName="name" id="itemName" type="text" class="form-control form-control-sm bg-white text-uppercase w-50"
+              readonly [ngClass]="{'is-invalid': model.get('item')?.get('id')?.errors && model.get('item')?.get('id')?.touched}" />
+
+            <div formGroupName="itemBrand">
+              <input formControlName="name" id="branName" type="text" class="form-control form-control-sm bg-white" readonly
+                [ngClass]="{'is-invalid': model.get('item')?.get('id')?.errors && model.get('item')?.get('id')?.touched}" />
+            </div>
+
+            <div formGroupName="itemUnitMeasure">
+              <input formControlName="name" id="name" type="text" class="form-control form-control-sm bg-white" readonly
+                [ngClass]="{'is-invalid': model.get('item')?.get('id')?.errors && model.get('item')?.get('id')?.touched}" />
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+      <div class="row mt-2">
+
+        <div class="col-2">
+          <label for="stock">STOCK</label>
+          <input formControlName="stock" id="stock" type="text" class="form-control form-control-sm bg-custom" readonly>
+        </div>
+
+        <div class="col-2">
+          <label for="unitValue">VALOR UNITARIO</label>
+          <input formControlName="unitValue" id="unitValue" type="text" class="form-control form-control-sm bg-custom" readonly>
+        </div>
+
+        <div class="col-2">
+          <label for="position">POSICIÓN</label>
+          <input formControlName="position" id="position" #txtAmount type="text" maxlength="5" class="form-control form-control-sm"
+            [ngClass]="{'is-invalid':model.get('position')?.errors && model.get('position')?.touched}">
+            @if ("model.get('position')?.hasError('required')") {<div class="invalid-feedback">Campo requerido</div>}
+        </div>
+
+      </div>
+
+      <br>
+
+    </div>
+
+  </div>
+
+  <div class="modal-footer">
+    <button (click)="confirm()" #btnConfirm type="button" class="btn btn-sm btn-outline-primary">Actualzar</button>
+    <button (click)="cancel()" type="button" class="btn btn-sm btn-link">Cancelar</button>
+</div>
+

@@ -1,0 +1,343 @@
+@if (!setting.mainScreen) {
+
+  <div class="card">
+
+    <div class="card-header"><i class="fa-brands fa-artstation"></i> ORDEN DE INGRESO</div>
+
+    <div [formGroup]="paged" class="card-body">
+
+      <div formArrayName="lstFilter" class="row">
+
+        <div [formGroupName]="0" class="col-1">
+          <label for="filterId">NÚMERO</label>
+          <input formControlName="value" id="filterId" #filterId type="text" class="form-control form-control-sm" maxlength="10" autocomplete="off"
+            (keyup.enter)="search()" (keypress)="onKeyPressNumeros($event)"
+            [ngClass]="{'is-invalid': paged.get('lstFilter')?.get('1')?.get('value')?.errors}" />
+
+          <div *ngIf="paged.get('lstFilter')?.get('1')?.get('value')?.hasError('pattern')" class="invalid-feedback">Ingrese solo números</div>
+        </div>
+
+        <div [formGroupName]="1" class="col-2">
+          <label for="filterOperationType">TIPO OPERACIÓN</label>
+          <select formControlName="value" (change)="search()" id="filterOperationType" class="form-select">
+            <option value="">[TODOS]</option>
+            @for (item of setting.lstOperationType; track $index) {
+              <option [value]="item.id">{{item.name}}</option>
+            }
+          </select>
+        </div>
+
+        <div [formGroupName]="2" class="col-3">
+          <label for="filterProduct">PRODUCTO</label>
+          <div class="input-group">
+            <input formControlName="value" type="text" hidden/>
+            <input  [(ngModel)]="setting.filterItem" [ngModelOptions]="{standalone: true}" id="filterProduct" type="text" class="form-control form-control-sm" readonly />
+            <button (click)="searchItem()" type="button" class="btn btn-default btn-custom"><i class="fas fa-search"></i></button>
+            <button (click)="cleanItem()" type="button" class="btn btn-default btn-custom" title="Limpiar filtro"><i class="fas fa-times"></i></button>
+          </div>
+        </div>
+
+        <div [formGroupName]="3" class="col-2">
+          <label for="filterRangeDate">RANGO DE FECHAS</label>
+          <div class="input-group">
+            <input formControlName="value" type="text" hidden/>
+            <input [(ngModel)]="setting.filterRangeDate" [ngModelOptions]="{standalone: true}" id="filterRangeDate" type="text" class="form-control form-control-sm bg-white" maxlength="10"
+              readonly [bsConfig]="{ containerClass: 'theme-dark-blue', isAnimated: true, showWeekNumbers:false }" #drp="bsDaterangepicker" bsDaterangepicker (bsValueChange)="onChangeRangeDate($event)"/>
+
+            <button (click)="drp.toggle()" [attr.aria-expanded]="drp.isOpen" type="button" class="btn btn-default btn-custom"><i class="far fa-calendar-alt"></i></button>
+            <button (click)="cleanRangeDate()" type="button" class="btn btn-default btn-custom" title="Limpiar filtro"><i class="fas fa-times"></i></button>
+          </div>
+        </div>
+
+        <div [formGroupName]="4" class="col-2">
+          <label for="filterState">ESTADO</label>
+          <select formControlName="value" (change)="search()" id="filterState" class="form-select">
+            <option value="">[TODOS]</option>
+            @for (item of setting.lstState; track $index) {
+              <option [value]="item.id">{{item.name}}</option>
+            }
+          </select>
+        </div>
+
+      </div>
+
+      <hr>
+      <div class="btn-group" role="group">
+        <button (click)="search()" type="button" class="btn btn-primary"><i class="fas fa-search fa-lg"></i> Buscar</button>
+        <button (click)="create()" type="button" class="btn btn-default" style="margin-left: .5rem;"><i class="far fa-file fa-lg"></i> Nuevo</button>
+        <button (click)="update()" [disabled]="setting.recordId == 0 || setting.onlyView" type="button" class="btn btn-default"><i class="far fa-edit fa-lg"></i> Modificar</button>
+        <button (click)="delete()" [disabled]="setting.recordId == 0 || setting.onlyView" type="button" class="btn btn-default"><i class="far fa-trash-alt fa-lg"></i> Anular</button>
+        <button (click)="print()" [disabled]="setting.recordId == 0" type="button" class="btn btn-default"><i class="fas fa-print fa-lg"></i> Imprimir</button>
+      </div>
+
+      <hr>
+      <div class="container-tabla" tabindex="0">
+
+        <div class="overflow-auto" [style.height.px]="table.hight">
+          <table class="table table-bordered table-hover">
+            <thead>
+              <tr>
+                @for (item of table.lstColumn; track $index) {
+                  <th [width]="item.width" [ngClass]="item.style">{{item.name}}</th>
+                }
+              </tr>
+            </thead>
+            <tbody>
+              @for (item of table.content; track item.id; let i = $index) {
+                <tr [ngClass]="{'bg-seleccion' : setting.recordId == item.id}" (click)="selectRecord(item)" (dblclick)="update()">
+                  <td class="td-table" [ngClass]="table.lstColumn[0].style"> {{ i + 1 + (table.pageSize * (table.pageNumber - 1)) }} </td>
+                  <td class="td-table" [ngClass]="table.lstColumn[1].style"> {{ ("00000" + item.id).slice(-5) }} </td>
+                  <td class="td-table" [ngClass]="table.lstColumn[2].style"> {{ item.destinyCostCenter.name }}</td>
+                  <td class="td-table" [ngClass]="table.lstColumn[3].style"> {{ item.operationType.name }}</td>
+                  <td class="td-table" [ngClass]="table.lstColumn[4].style"> {{ ("00000" + item.idDocument).slice(-5) }} </td>
+                  <td class="td-table" [ngClass]="table.lstColumn[5].style"> {{ item.date }}</td>
+                  <td class="td-table" [ngClass]="table.lstColumn[6].style"> {{ item.state.name }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <div class="panel-paginado">
+          <div class="row">
+
+            <div class="col-5">
+              <label>
+                <i class="far fa-clone"></i>&nbsp; Mostrando {{ table.startElement }} al {{ table.endElement }} de {{ table.totalElements }} registros
+              </label>
+            </div>
+
+            <div class="col-2">
+              <div class="row">
+                <label class="col-7 text-end mt-2">Mostrar :</label>
+
+                <div class="col-5">
+                  <select formControlName="pageSize" (change)="search()" class="form-select mt-1">
+                    @for (item of table.lstPageSize; track $index) {
+                      <option [value]="item.id">{{item.name}}</option>
+                    }
+                  </select>
+                </div>
+
+              </div>
+            </div>
+
+            <div class="col-5">
+              <ul class="pagination justify-content-end">
+                @for (item of table.lstPageNumber; track $index) {
+                  <li class={{item.style}}>
+                    <a (click)="paginationManager(item, table)" class="page-link">{{item.value}}</a>
+                  </li>
+                }
+              </ul>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+} @else {
+
+  <div class="card">
+    <div class="card-header"><i class="fa-brands fa-artstation"></i> ORDEN DE INGRESO - {{ setting.operation }}</div>
+    <div class="card-body">
+
+      <div class="card">
+
+        <div class="card-header card-header-registro">
+          <div class="row">
+
+            <div class="col-6">
+              <div class="btn-group" role="group">
+                @if (!setting.onlyView) {
+                  @if (model.value.id == '') {
+                    <button (click)="save()" type="button" class="btn btn-primary"><i class="far fa-save fa-lg"></i>&nbsp; Guardar &nbsp;</button>
+                  }@else {
+                    <button (click)="save()" type="button" class="btn btn-primary"><i class="far fa-save fa-lg"></i> Actualizar</button>
+                  }
+                }
+                <button (click)="exit()" type="button" class="btn btn-default"><i class="fas fa-sign-out-alt fa-lg"></i> Salir &nbsp;&nbsp;</button>
+              </div>
+            </div>
+
+            <div class="col-6 text-end" [style.color]="model.value.state.color">
+              <i [ngClass]="model.value.state.icon"></i> &nbsp; <label class="fw-bold" style="font-size: 11px; margin-top: 6px;">{{ model.value.state.name }}</label>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="card-body">
+
+          <div [formGroup]="model">
+
+            <div class="row">
+
+              <div class="col-1">
+                <label for="id">CÓDIGO</label>
+                <input formControlName="id" id="id" type="text" class="form-control form-control-sm text-center bg-custom" readonly>
+              </div>
+
+              <div class="col-2" formGroupName="operationType">
+                <label for="operationTypeId">TIPO OPERACIÓN</label>
+                <select formControlName="id" id="operationTypeId" class="form-select" #cmbTipoOperacion>
+                  @for (item of setting.lstOperationType; track $index) {
+                    <option [value]="item.id">{{item.name}}</option>
+                  }
+                </select>
+              </div>
+
+              <div class="col-2">
+                <label for="idDocument" class="col-12">N° ORDEN COMPRA</label>
+                <div class="input-group">
+                  <input formControlName="idDocument" id="idDocument" type="text" class="form-control form-control-sm" readonly
+                    [ngClass]="{'is-invalid': model.get('idDocument')?.errors && model.get('idDocument')?.touched}" />
+                  <input formControlName="idDocument" id="idDocument" type="text" class="form-control form-control-sm" hidden />
+                  <button (click)="searchDocument()" #btnBuscarDocumento type="button" [disabled]="setting.operation == 'MODIFICAR'" class="btn btn-default btn-custom"><i class="fas fa-search"></i></button>
+                  <button (click)="cleanDocument()" type="button" [disabled]="setting.operation == 'MODIFICAR'" class="btn btn-default btn-custom" title="Limpiar filtro"><i class="fas fa-times"></i></button>
+                  <div *ngIf="model.get('idDocument')?.hasError('required')" class="invalid-feedback">Campo requerido </div>
+                </div>
+              </div>
+
+              <div class="col-5" formGroupName="destinyCostCenter">
+                <label for="destinyCostCenterName" class="col-12">ALMACEN</label>
+                <div class="input-group">
+                  <input formControlName="name" id="destinyCostCenterName" type="text" class="form-control form-control-sm" readonly
+                    [ngClass]="{'is-invalid': model.get('destinyCostCenter')?.get('id')?.errors && model.get('destinyCostCenter')?.get('id')?.touched}"/>
+                  <input formControlName="id" id="destinyCostCenterId" type="text" class="form-control form-control-sm" hidden />
+                  <div *ngIf="model.get('destinyCostCenter')?.get('id')?.hasError('required')" class="invalid-feedback">Campo requerido</div>
+                </div>
+              </div>
+
+              <div class="col-2">
+                <label for="date">FECHA INGRESO</label>
+                <div class="input-group">
+                  <input formControlName="date" id="date" type="text" class="form-control form-control-sm" maxlength="10"
+                    [bsConfig]="{ containerClass: 'theme-dark-blue', isAnimated: true, showWeekNumbers:false }" #dp="bsDatepicker" bsDatepicker (keypress)="onKeyPressDate($event)"
+                    (change)="onChangeInvalidDate($event)"
+                    [ngClass]="{'is-invalid': model.get('date')?.errors && model.get('date')?.touched}">
+                  <button (click)="dp.toggle()" [attr.aria-expanded]="dp.isOpen" type="button" class="btn btn-default btn-custom"><i class="far fa-calendar-alt"></i></button>
+                  <div *ngIf="model.get('date')?.hasError('required')" class="invalid-feedback">Campo requerido </div>
+                </div>
+              </div>
+
+            </div>
+
+            <div class="row mt-2">
+
+              <div class="col-2" formGroupName="proofPaymentType">
+                <label for="proofPaymentTypeId">TIPO COMPROBANTE</label>
+                <select formControlName="id" id="proofPaymentTypeId" class="form-select" #cmbTipoOperacion>
+                  @for (item of setting.lstProofPaymentType; track $index) {
+                    <option [value]="item.id">{{item.name}}</option>
+                  }
+                </select>
+              </div>
+
+              <div class="col-1">
+                <label for="proofSeries">SERIE</label>
+                <input formControlName="proofSeries" id="proofSeries" type="text" class="form-control form-control-sm text-uppercase" maxlength="4"
+                  (keypress)="onKeyPressLetrasNumeros($event)"
+                  [ngClass]="{'is-invalid': model.get('proofSeries')?.errors && model.get('proofSeries')?.touched}">
+
+                <div *ngIf="model.get('proofSeries')?.errors" class="invalid-feedback">
+                  <div *ngIf="model.get('proofSeries')?.hasError('required')">Campo requerido</div>
+                  <div *ngIf="model.get('proofSeries')?.hasError('pattern')">Ingrese solo letras y números</div>
+                  <div *ngIf="model.get('proofSeries')?.hasError('minlength')">Mínimo 4 dígitos</div>
+                </div>
+              </div>
+
+              <div class="col-1">
+                <label for="proofNumber">NÚMERO</label>
+                <input formControlName="proofNumber" id="proofNumber" type="text" class="form-control form-control-sm text-uppercase" maxlength="8"
+                  (keypress)="onKeyPressNumeros($event)"
+                  [ngClass]="{'is-invalid': model.get('proofNumber')?.errors && model.get('proofNumber')?.touched}">
+
+                  <div *ngIf="model.get('proofNumber')?.errors" class="invalid-feedback">
+                    <div *ngIf="model.get('proofNumber')?.hasError('required')">Campo requerido</div>
+                    <div *ngIf="model.get('proofNumber')?.hasError('pattern')">Ingrese solo números</div>
+                  </div>
+              </div>
+
+              <div class="col-6">
+                <label for="observation">OBSERVACIÓN</label>
+                <input formControlName="observation" id="observation" type="text"
+                  class="form-control form-control-sm text-uppercase" maxlength="200">
+              </div>
+
+            </div>
+
+            <div class="row" style="margin-top: 0.8rem;">
+              <div class="col-auto"><label style="font-size: 0.65rem; color: #6785B8;"><b>LISTADO DE PRODUCTOS</b></label></div>
+              <div class="col"><hr></div>
+            </div>
+
+            <div class="btn-group mt-2" role="group">
+
+              <button (click)="editItem()" [disabled]="setting.recordId2 == 0" #btnEditar type="button" class="btn btn-default" title="Editar registro">
+                <i class="fas fa-edit fa-lg"></i>&nbsp; Editar
+              </button>
+
+              <button (click)="removeItem()" [disabled]="setting.recordId2 == 0" #btnQuitar type="button" class="btn btn-danger" title="Quitar registro">
+                <i class="fas fa-trash fa-lg"></i>&nbsp; Quitar
+              </button>
+
+            </div>
+
+            <div class="container-tabla mt-2" tabindex="0">
+
+              <div class="overflow-auto" [style.height.px]="table2.hight">
+                <table class="table table-bordered table-hover">
+                  <thead>
+                    <tr>
+                      @for (item of table2.lstColumn; track $index) {
+                        <th [width]="item.width" [ngClass]="item.style">{{item.name}}</th>
+                      }
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (item of table2.content; track item.id; let i = $index) {
+                      <tr [ngClass]="{'bg-seleccion' : setting.recordId2 == item.item.id}" (click)="selectRecord2(item)">
+                        <td class="td-table" [ngClass]="table2.lstColumn[0].style"> {{ i + 1 + (table2.pageSize * (table2.pageNumber - 1)) }} </td>
+                        <td class="td-table" [ngClass]="table2.lstColumn[1].style">{{ item.item.id }}</td>
+                        <td class="td-table" [ngClass]="table2.lstColumn[2].style">{{ item.item.name | uppercase }}</td>
+                        <td class="td-table" [ngClass]="table2.lstColumn[3].style">{{ item.item.itemUnitMeasure.name }}</td>
+                        <td class="td-table" [ngClass]="table2.lstColumn[4].style">{{ item.amount }}</td>
+                        <td class="td-table" [ngClass]="table2.lstColumn[5].style">{{ item.amountReception }}</td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="panel-paginado">
+                <div class="row">
+
+                  <div class="col-6">
+                    <label>
+                      <i class="far fa-clone"></i>&nbsp; Mostrando {{ table2.totalElements }} registros
+                    </label>
+                  </div>
+
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+}

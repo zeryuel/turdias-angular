@@ -1,0 +1,75 @@
+<div class="modal-header">
+  <div class="modal-title"><i class="fa-brands fa-artstation"></i> ROLES ASOCIADOS</div>
+  <button type="button" (click)="bsModalRef.hide()" class="btn-close" data-bs-dismiss="modal"
+    aria-label="Close"></button>
+</div>
+
+<div class="modal-body">
+
+  <div [formGroup]="model">
+
+    <div class="row">
+
+      <div class="col-12">
+        <label for="id">SISTEMA</label>
+        <input formControlName="applicationName" id="applicationName" type="text" class="form-control form-control-sm" readonly>
+      </div>
+
+    </div>
+
+    <div class="row" style="margin-top: 0.8rem;">
+      <div class="col-auto"><label style="font-size: 0.65rem; color: #6785B8;"><b>LISTADO DE ROLES</b></label></div>
+      <div class="col"><hr></div>
+    </div>
+
+    <div class="btn-group mt-2" role="group">
+      <button (click)="addRole()" type="button" class="btn btn-default" title="Agregar registro">
+        <i class="fas fa-plus fa-lg"></i> Agregar
+      </button>
+      <button (click)="removeRole()" [disabled]="setting.recordId == 0" type="button" class="btn btn-danger" title="Quitar registro">
+        <i class="far fa-trash-alt fa-lg"></i> Quitar
+      </button>
+    </div>
+
+    <div class="container-tabla mt-2" tabindex="0">
+
+      <div class="overflow-auto" [style.height.px]="table.hight">
+        <table class="table table-bordered table-hover">
+          <thead>
+            <tr>
+              @for (item of table.lstColumn; track $index) {
+                <th [width]="item.width" [ngClass]="item.style">{{item.name}}</th>
+              }
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of table.content; track item.id; let i = $index) {
+            <tr [ngClass]="{'bg-seleccion' : setting.recordId == item.id}" (click)="selectRecord(item)"
+              (dblclick)="confirm()">
+              <td class="td-table" [ngClass]="table.lstColumn[0].style"> {{ i + 1 + (table.pageSize * (table.pageNumber - 1)) }} </td>
+              <td class="td-table" [ngClass]="table.lstColumn[1].style"> {{ ("000" + item.idRole).slice(-3) }} </td>
+              <td class="td-table" [ngClass]="table.lstColumn[2].style"> {{ item.roleName }} </td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <div class="panel-paginado">
+
+        <label>
+          <i class="far fa-clone"></i>&nbsp; Mostrando {{ table.totalElements }} registros
+        </label>
+
+      </div>
+
+    </div>
+
+
+  </div>
+
+</div>
+
+<div class="modal-footer">
+  <button (click)="confirm()" type="button" class="btn btn-sm btn-outline-primary">Regresar</button>
+</div>

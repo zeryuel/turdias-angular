@@ -1,0 +1,37 @@
+<div class="card">
+
+  <div class="card-header"><i class="fa-brands fa-artstation"></i> REPORTE DE INVENTARIOS DE ALMACEN</div>
+
+  <div class="card-body">
+
+    <div [formGroup]="model">
+
+      <div class="row">
+
+        <div class="col-4">
+          <label for="cost_center_name" class="col-12">ALMACEN</label>
+          <div class="input-group">
+            <input formControlName="cost_center_name" id="cost_center_name" type="text"
+              class="form-control form-control-sm" readonly
+              [ngClass]="{'is-invalid': model.get('id_cost_center')?.errors && model.get('id_cost_center')?.touched}" />
+            <input formControlName="id_cost_center" id="id_cost_center" type="text" class="form-control form-control-sm"
+              hidden />
+            <button (click)="searchCostCenter()" type="button" class="btn btn-default btn-custom" #btnBuscarCentroCosto><i class="fas fa-search"></i></button>
+            <button (click)="cleanCostCenter()" type="button" class="btn btn-default btn-custom" title="Limpiar filtro"><i class="fas fa-times"></i></button>
+            <div *ngIf="model.get('id_cost_center')?.hasError('required')" class="invalid-feedback">Campo requerido
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <hr>
+      <div class="btn-group" role="group">
+        <button (click)="generateReport()" type="button" class="btn btn-primary"><i class="fas fa-print fa-lg"></i>
+          Generar reporte</button>
+      </div>
+    </div>
+
+  </div>
+
+</div>

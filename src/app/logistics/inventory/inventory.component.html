@@ -1,0 +1,130 @@
+<div class="card">
+
+  <div class="card-header"><i class="fa-brands fa-artstation"></i> INVENTARIO DE ALMACÉN</div>
+
+  <div [formGroup]="paged" class="card-body">
+
+    <div formArrayName="lstFilter" class="row">
+
+      <div [formGroupName]="0"  class="col-4">
+        <label for="filterCostCenter">ALMACEN</label>
+        <div class="input-group">
+          <input formControlName="value" type="text" hidden/>
+          <input [(ngModel)]="setting.filterCostCenter" [ngModelOptions]="{standalone: true}" id="filterCostCenter" type="text" class="form-control form-control-sm" readonly
+            [ngClass]="{'is-invalid': paged.get('lstFilter')?.get('0')?.get('value')?.errors && paged.get('lstFilter')?.get('0')?.get('value')?.touched}"/>
+
+          <button (click)="searchCostCenter()" type="button" class="btn btn-default btn-custom"><i class="fas fa-search"></i></button>
+          <button (click)="cleanCostCenter()" type="button" class="btn btn-default btn-custom" title="Limpiar filtro"><i class="fas fa-times"></i></button>
+          <!-- @if ("paged.get('lstFilter')?.get('0')?.get('value')?.hasError('required')") {<div class="invalid-feedback">Campo requerido</div>} -->
+        </div>
+      </div>
+
+      <div [formGroupName]="1" class="col-1">
+        <label for="filterItemId">CODIGO</label>
+        <input formControlName="value" id="filterItemId" type="text" class="form-control form-control-sm" maxlength="6"
+          (keyup.enter)="search()" (keypress)="onKeyPressNumeros($event)"
+          [ngClass]="{'is-invalid': paged.get('lstFilter')?.get('1')?.get('value')?.errors}" />
+
+          <!-- @if ("paged.get('lstFilter')?.get('1')?.get('value')?.hasError('pattern')") {<div class="invalid-feedback">Ingrese solo números</div>} -->
+      </div>
+
+      <div [formGroupName]="2" class="col-1">
+        <label for="filterItemAlternativeCode">COD. ALTERNAT.</label>
+        <input formControlName="value" id="filterItemAlternativeCode" type="text" class="form-control form-control-sm text-uppercase" maxlength="20"
+               (keyup.enter)="search()" (keypress)="onKeyPressAlfaNumerico($event)"
+               [ngClass]="{'is-invalid': paged.get('lstFilter')?.get('2')?.get('value')?.errors}" />
+
+        <!-- @if ("paged.get('lstFilter')?.get('2')?.get('value')?.hasError('pattern')") {<div class="invalid-feedback">Ingrese solo caracteres validos</div>} -->
+      </div>
+
+      <div [formGroupName]="3" class="col-4">
+        <label for="filterItemName">PRODUCTO</label>
+        <input formControlName="value" id="filterItemName" type="text" class="form-control form-control-sm text-uppercase" maxlength="50"
+               (keyup.enter)="search()" (keypress)="onKeyPressAlfaNumerico($event)"
+               [ngClass]="{'is-invalid': paged.get('lstFilter')?.get('3')?.get('value')?.errors}" />
+
+        <!-- @if ("paged.get('lstFilter')?.get('3')?.get('value')?.hasError('pattern')") {<div class="invalid-feedback">Ingrese solo caracteres validos</div>} -->
+      </div>
+
+    </div>
+
+    <hr>
+    <div class="btn-group" role="group">
+      <button (click)="search()" type="button" class="btn btn-primary btn-sm"><i class="fas fa-search fa-lg"></i> Buscar</button>
+      <button (click)="edit()" [disabled]="setting.recordId == 0" #btnEditar type="button" class="btn btn-default" title="Editar registro">
+        <i class="fas fa-edit fa-lg"></i>&nbsp; Editar
+      </button>
+    </div>
+
+    <hr>
+    <div class="container-tabla" tabindex="0">
+
+      <div class="overflow-auto" [style.height.px]="table.hight">
+        <table class="table table-bordered table-hover">
+          <thead>
+            <tr>
+              @for (item of table.lstColumn; track $index) {
+                <th [width]="item.width" [ngClass]="item.style">{{item.name}}</th>
+              }
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of table.content; track item.id; let i = $index) {
+              <tr [ngClass]="{'bg-seleccion' : setting.recordId == item.id}" (click)="selectRecord(item)">
+                <td class="td-table" [ngClass]="table.lstColumn[0].style"> {{ i + 1 + (table.pageSize * (table.pageNumber - 1)) }} </td>
+                <td class="td-table" [ngClass]="table.lstColumn[1].style"> {{ item.item.id }} </td>
+                <td class="td-table" [ngClass]="table.lstColumn[2].style"> {{ item.item.name }}</td>
+                <td class="td-table" [ngClass]="table.lstColumn[3].style"> {{ item.item.alternativeCode }} </td>
+                <td class="td-table" [ngClass]="table.lstColumn[4].style"> {{ item.item.itemBrand.name }}</td>
+                <td class="td-table" [ngClass]="table.lstColumn[5].style"> {{ item.item.itemUnitMeasure.name }}</td>
+                <td class="td-table" [ngClass]="table.lstColumn[6].style"> {{ item.position }}</td>
+                <td class="td-table" [ngClass]="table.lstColumn[7].style"> {{ item.unitValue | number: '1.2-2' }}</td>
+                <td class="td-table" [ngClass]="table.lstColumn[8].style"> {{ item.stock }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <div class="panel-paginado">
+        <div class="row">
+
+          <div class="col-5">
+            <label>
+              <i class="far fa-clone"></i>&nbsp; Mostrando {{ table.startElement }} al {{ table.endElement }} de {{ table.totalElements }} registros
+            </label>
+          </div>
+
+          <div class="col-2">
+            <div class="row">
+              <label class="col-7 text-end mt-2">Mostrar :</label>
+
+              <div class="col-5">
+                <select formControlName="pageSize" (change)="search()" class="form-select mt-1">
+                  @for (item of table.lstPageSize; track $index) {
+                    <option [value]="item.id">{{item.name}}</option>
+                  }
+                </select>
+              </div>
+
+            </div>
+          </div>
+
+          <div class="col-5">
+            <ul class="pagination justify-content-end">
+              @for (item of table.lstPageNumber; track $index) {
+                <li class={{item.style}}>
+                  <a (click)="paginationManager(item, table)" class="page-link">{{item.value}}</a>
+                </li>
+              }
+            </ul>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

@@ -1,0 +1,77 @@
+<section class="h-100 gradient-form">
+
+  <div class="container py-5 h-100">
+
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col-xl-10">
+        <div class="card rounded-3 text-black">
+          <div class="row g-0">
+
+            <div class="col-lg-6">
+              <div class="card-body p-md-5 mx-md-4">
+
+                <div class="text-center">
+                  <img src="./assets/images/lotus.webp" style="width: 185px;" alt="logo">
+                  <h5 class="mt-1 mb-5 pb-1">E.R.P. INTEGRADO DE TRANSPORTES</h5>
+                </div>
+
+                <form [formGroup]="model" novalidate (ngSubmit)="onSubmit()" autocomplete="off">
+                  <p>Por favor, ingrese a su cuenta</p>
+
+                  <div class="form-outline mb-2">
+                    <label for="login">USUARIO</label>
+                    <input formControlName="login" id="login" type="text" class="form-control form-control-sm text-uppercase" maxlength="50" autofocus
+                      [ngClass]="{'is-invalid': model.get('login')?.errors && model.get('login')?.touched}" />
+
+                    <div *ngIf="model.get('login')?.hasError('required')" class="invalid-feedback">Campo requerido </div>
+                  </div>
+
+                  <div class="form-outline mb-2">
+                    <label for="password">CONTRASEÑA</label>
+                    <input formControlName="password" id="password" type="password" class="form-control form-control-sm text-uppercase" maxlength="50"
+                      [ngClass]="{'is-invalid': model.get('password')?.errors && model.get('password')?.touched}" />
+
+                      <div *ngIf="model.get('password')?.hasError('required')" class="invalid-feedback">Campo requerido </div>
+                  </div>
+
+                  <div formGroupName="company" class="form-outline mb-4">
+                    <label for="companyReasonSocial">EMPRESA</label>
+                    <input formControlName="reasonSocial" id="companyReasonSocial" type="text" class="form-control form-control-sm bg-custom" readonly/>
+                  </div>
+
+                  <div class="pt-5 mb-2 pb-1 d-grid">
+                    <button type="submit" class="btn btn-primary gradient-custom-2 mb-3">
+                      <span style="font-size:1rem">Iniciar sesión</span>
+                    </button>
+                  </div>
+
+                  <div class="text-center">
+                    <label>Versión 1.0.2</label>
+                  </div>
+
+                </form>
+
+              </div>
+            </div>
+
+            <div class="col-lg-6 d-flex align-items-center gradient-custom-2">
+              <div class="text-white px-3 py-4 p-md-5 mx-md-4">
+                <h4 class="mb-4">Somos más que una empresa</h4>
+                <p class="small mb-0">
+                  Dar al cliente la importancia que merece significa proporcionar un servicio de calidad, el cual se
+                  reflejará
+                  en el desempeño y las actitudes de las personas que laboran en el negocio, de su compromiso para
+                  atender de
+                  la mejor manera a los clientes.
+                </p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</section>

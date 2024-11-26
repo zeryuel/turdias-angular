@@ -1,0 +1,129 @@
+<div class="card">
+
+  <div class="card-header"><i class="fa-brands fa-artstation"></i> KARDEX</div>
+
+  <div [formGroup]="model" class="card-body">
+
+    <div class="row">
+
+      <div class="col-3" formGroupName="costCenter">
+        <label for="costCenterName" class="col-12">ALMACEN</label>
+        <div class="input-group">
+          <input formControlName="id" id="costCenterId" type="text" class="form-control form-control-sm" hidden/>
+          <input formControlName="name" id="costCenterName" type="text" class="form-control form-control-sm" readonly
+            [ngClass]="{'is-invalid': model.get('costCenter')?.get('id')?.errors && model.get('costCenter')?.get('id')?.touched}" />
+
+          <button (click)="searchCostCenter()" type="button" class="btn btn-default btn-custom" #btnBuscarCentroCosto><i class="fas fa-search"></i></button>
+          <button (click)="cleanCostCenter()" type="button" class="btn btn-default btn-custom" title="Limpiar filtro"><i class="fas fa-times"></i></button>
+          @if ("model.get('costCenter')?.get('id')?.hasError('required')") {<div class="invalid-feedback">Campo requerido </div>}
+        </div>
+      </div>
+
+      <div class="col-5" formGroupName="item">
+        <label for="itemId" class="col-2">CÓDIGO</label>
+        <label for="filtroExistenciaNombre" class="col-8">PRODUCTO</label>
+        <label for="filtroMedidaNombre" class="col-2">UND. MEDIDA</label>
+        <div class="input-group">
+          <input formControlName="id" id="itemId" type="text" class="form-control form-control-sm" readonly
+            [ngClass]="{'is-invalid': model.get('item')?.get('id')?.errors && model.get('item')?.get('id')?.touched}" />
+
+          <input formControlName="name" type="text" class="form-control form-control-sm bg-white w-50" readonly
+            [ngClass]="{'is-invalid': model.get('item')?.get('id')?.errors && model.get('item')?.get('id')?.touched}" />
+
+          <input formControlName="unitMeasureName" id="filtroMedidaNombre" type="text" class="form-control form-control-sm bg-white" readonly
+            [ngClass]="{'is-invalid': model.get('item')?.get('id')?.errors && model.get('item')?.get('id')?.touched}" />
+
+          <button (click)="searchItem()" #btnBuscarExistencia type="button" class="btn btn-default btn-custom"><i class="fas fa-search"></i></button>
+          <button (click)="cleanItem()" type="button" class="btn btn-default btn-custom" title="Limpiar filtro"><i class="fas fa-times"></i></button>
+
+          <div *ngIf="model.get('item')?.get('id')?.errors" class="invalid-feedback">
+            <div *ngIf="model.get('item')?.get('id')?.hasError('required')">Campos requeridos</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-2">
+        <label for="startDate">FECHA INICIO</label>
+        <div class="input-group">
+          <input formControlName="startDate" id="startDate" type="text" class="form-control form-control-sm" maxlength="10"
+            [bsConfig]="{ containerClass: 'theme-dark-blue', isAnimated: true, showWeekNumbers:false }" #dp="bsDatepicker" bsDatepicker (keypress)="onKeyPressDate($event)"
+            (change)="onChangeInvalidDate($event)"
+            [ngClass]="{'is-invalid': model.get('startDate')?.errors && model.get('startDate')?.touched}">
+          <button (click)="dp.toggle()" [attr.aria-expanded]="dp.isOpen" type="button" class="btn btn-default btn-custom"><i class="far fa-calendar-alt"></i></button>
+          <div *ngIf="model.get('startDate')?.hasError('required')" class="invalid-feedback">Campo requerido </div>
+        </div>
+      </div>
+
+      <div class="col-2">
+        <label for="endDate">FECHA FIN</label>
+        <div class="input-group">
+          <input formControlName="endDate" id="endDate" type="text" class="form-control form-control-sm" maxlength="10"
+            [bsConfig]="{ containerClass: 'theme-dark-blue', isAnimated: true, showWeekNumbers:false }" #dp1="bsDatepicker" bsDatepicker (keypress)="onKeyPressDate($event)"
+            (change)="onChangeInvalidDate($event)"
+            [ngClass]="{'is-invalid': model.get('endDate')?.errors && model.get('endDate')?.touched}">
+          <button (click)="dp1.toggle()" [attr.aria-expanded]="dp1.isOpen" type="button" class="btn btn-default btn-custom"><i class="far fa-calendar-alt"></i></button>
+          <div *ngIf="model.get('endDate')?.hasError('required')" class="invalid-feedback">Campo requerido </div>
+        </div>
+      </div>
+
+    </div>
+
+    <hr>
+    <div class="btn-group" role="group">
+      <button (click)="search()" type="button" class="btn btn-primary btn-sm"><i class="fas fa-search fa-lg"></i> Buscar</button>
+    </div>
+
+    <hr>
+    <div class="container-tabla">
+
+      <div class="overflow-auto" [style.height.px]="table.hight">
+        <table class="table table-bordered table-hover">
+          <thead>
+            <tr>
+              <th *ngFor="let item of table.lstColumnGroup" [attr.colspan]="item.colspan" [ngClass]="item.style">{{item.name}}</th>
+            </tr>
+            <tr>
+              <th *ngFor="let item of table.lstColumn" [width]="item.width" [ngClass]="item.style">{{item.name}}</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of lstKardex; track item.id; let i = $index) {
+              <tr [ngClass]="{'bg-seleccion' : setting.recordId == item.id}" (click)="selectRecord(item)">
+                <td class="td-table" [ngClass]="table.lstColumn[0].style"> {{ i + 1 }} </td>
+                <td class="td-table" [ngClass]="table.lstColumn[1].style"> {{ item.date }}</td>
+                <td class="td-table" [ngClass]="table.lstColumn[2].style"> {{ item.proofPaymentType.name }}</td>
+                <td class="td-table" [ngClass]="table.lstColumn[3].style"> {{ item.proofSeries }}</td>
+                <td class="td-table" [ngClass]="table.lstColumn[4].style"> {{ item.proofNumber }}</td>
+                <td class="td-table" [ngClass]="table.lstColumn[5].style"> {{ item.operationType.name }}</td>
+                <td class="td-table" [ngClass]="table.lstColumn[6].style"> {{ item.entryAmount }}</td>
+                <td class="td-table" [ngClass]="table.lstColumn[7].style"> {{ item.entryUnitCost | number: '1.2-2' }}</td>
+                <td class="td-table" [ngClass]="table.lstColumn[8].style"> {{ item.entryTotalCost | number: '1.2-2' }}</td>
+                <td class="td-table" [ngClass]="table.lstColumn[9].style"> {{ item.departureAmount }}</td>
+                <td class="td-table" [ngClass]="table.lstColumn[10].style"> {{ item.departureUnitCost | number: '1.2-2' }}</td>
+                <td class="td-table" [ngClass]="table.lstColumn[11].style"> {{ item.departureTotalCost | number: '1.2-2' }}</td>
+                <td class="td-table" [ngClass]="table.lstColumn[12].style"> {{ item.finalBalanceAmount }}</td>
+                <td class="td-table" [ngClass]="table.lstColumn[13].style"> {{ item.finalBalanceUnitCost | number: '1.2-2' }}</td>
+                <td class="td-table" [ngClass]="table.lstColumn[14].style"> {{ item.finalBalanceTotalCost | number: '1.2-2' }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <div class="panel-paginado">
+        <div class="row">
+
+          <div class="col-5">
+            <label>
+              <i class="far fa-clone"></i>&nbsp; Mostrando {{ lstKardex.length }} registros
+            </label>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

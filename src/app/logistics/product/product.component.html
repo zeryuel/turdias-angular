@@ -1,0 +1,246 @@
+@if (!setting.mainScreen) {
+
+  <div class="card">
+
+    <div class="card-header"><i class="fa-brands fa-artstation fa-lg"></i> PRODUCTO</div>
+
+    <div [formGroup]="paged" class="card-body">
+
+      <div formArrayName="lstFilter" class="row">
+
+        <div [formGroupName]="0" class="col-1">
+          <label for="filterId">CODIGO</label>
+          <input formControlName="value" id="filterId" #filterId type="text" class="form-control form-control-sm text-uppercase" maxlength="5" autocomplete="off"
+            (keyup.enter)="search()" (keypress)="onKeyPressAlfaNumerico($event)" [ngClass]="{'is-invalid': paged.get('lstFilter')?.get('0')?.get('value')?.errors}" />
+
+            @if (paged.get('lstFilter')?.get('0')?.get('value')?.hasError('pattern')) {<div class="invalid-feedback">Ingrese solo caracteres validos</div>}
+        </div>
+
+        <div [formGroupName]="1" class="col-4">
+          <label for="filterName">NOMBRE</label>
+          <input formControlName="value" id="filterName" #filterName type="text" class="form-control form-control-sm text-uppercase" maxlength="20" autocomplete="off"
+            (keyup.enter)="search()" (keypress)="onKeyPressAlfaNumerico($event)" [ngClass]="{'is-invalid': paged.get('lstFilter')?.get('0')?.get('value')?.errors}" />
+
+            @if (paged.get('lstFilter')?.get('0')?.get('value')?.hasError('pattern')) {<div class="invalid-feedback">Ingrese solo caracteres validos</div>}
+        </div>
+
+        <div [formGroupName]="2" class="col-2">
+          <label for="filterAlternativeCode">COD. ALTERNATIVO</label>
+          <input formControlName="value" id="filterAlternativeCode" type="text" class="form-control form-control-sm text-uppercase" maxlength="10" autocomplete="off"
+            (keyup.enter)="search()" (keypress)="onKeyPressAlfaNumerico($event)" [ngClass]="{'is-invalid': paged.get('lstFilter')?.get('0')?.get('value')?.errors}" />
+
+            @if (paged.get('lstFilter')?.get('0')?.get('value')?.hasError('pattern')) {<div class="invalid-feedback">Ingrese solo caracteres validos</div>}
+        </div>
+
+        <div [formGroupName]="3" class="col-2">
+          <label for="filterUnitMeasure">UND. MEDIDA</label>
+          <select formControlName="value" id="filterUnitMeasure" (change)="search()" class="form-select">
+            <option value="">[TODOS]</option>
+            @for (item of setting.lstUnitMeasure; track $index) {
+              <option [value]="item.id">{{item.name}}</option>
+            }
+          </select>
+        </div>
+
+        <div [formGroupName]="4" class="col-1">
+          <label for="filterState">ESTADO</label>
+          <select formControlName="value" id="filterState" (change)="search()" class="form-select">
+            <option value="">[TODOS]</option>
+            <option value=1>ACTIVO</option>
+            <option value=0>INACTIVO</option>
+          </select>
+        </div>
+
+      </div>
+
+      <hr>
+      <div class="btn-group" role="group">
+        <button (click)="search()" type="button" class="btn btn-primary"><i class="fas fa-search fa-lg"></i> Buscar</button>
+        <button (click)="create()" type="button" class="btn btn-default" style="margin-left: .5rem;"><i class="far fa-file fa-lg"></i> Nuevo</button>
+        <button (click)="update()" [disabled]="setting.recordId == 0" type="button" class="btn btn-default"><i class="far fa-edit fa-lg"></i> Modificar</button>
+        <button (click)="delete()" [disabled]="setting.recordId == 0" type="button" class="btn btn-default"><i class="far fa-trash-alt fa-lg"></i> Eliminar</button>
+      </div>
+
+      <hr>
+      <div class="container-tabla" tabindex="0">
+
+        <div class="overflow-auto" [style.height.px]="table.hight">
+          <table class="table table-bordered table-hover">
+            <thead>
+              <tr>
+                @for (item of table.lstColumn; track $index) {
+                  <th [width]="item.width" [ngClass]="item.style">{{item.name}}</th>
+                }
+              </tr>
+            </thead>
+            <tbody>
+              @for (item of table.content; track item.id; let i = $index) {
+                <tr [ngClass]="{'bg-seleccion' : setting.recordId == item.id}" (click)="selectRecord(item)" (dblclick)="update()">
+                  <td class="td-table" [ngClass]="table.lstColumn[0].style"> {{ i + 1 + (table.pageSize * (table.pageNumber - 1)) }} </td>
+                  <td class="td-table" [ngClass]="table.lstColumn[1].style"> {{ item.id }} </td>
+                  <td class="td-table" [ngClass]="table.lstColumn[2].style"> {{ item.name }} </td>
+                  <td class="td-table" [ngClass]="table.lstColumn[3].style"> {{ item.alternativeCode }} </td>
+                  <td class="td-table" [ngClass]="table.lstColumn[4].style"> {{ item.brand.name }} </td>
+                  <td class="td-table" [ngClass]="table.lstColumn[5].style"> {{ item.unitMeasure.name }} </td>
+                  <td class="td-table" [ngClass]="table.lstColumn[6].style"> {{ item.active == 1 ? 'ACTIVO' : 'INACTIVO' }} </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <div class="panel-paginado">
+          <div class="row">
+
+            <div class="col-5">
+              <label>
+                <i class="far fa-clone"></i>&nbsp; Mostrando {{ table.startElement }} al {{ table.endElement }} de {{ table.totalElements }} registros
+              </label>
+            </div>
+
+            <div class="col-2">
+              <div class="row">
+                <label class="col-7 text-end mt-2">Mostrar :</label>
+
+                <div class="col-5">
+                  <select formControlName="pageSize" (change)="search()" class="form-select mt-1">
+                    @for (item of table.lstPageSize; track $index) {
+                      <option [value]="item.id">{{item.name}}</option>
+                    }
+                  </select>
+                </div>
+
+              </div>
+            </div>
+
+            <div class="col-5">
+              <ul class="pagination justify-content-end">
+                @for (item of table.lstPageNumber; track $index) {
+                  <li class={{item.style}}>
+                    <a (click)="paginationManager(item, table)" class="page-link">{{item.value}}</a>
+                  </li>
+                }
+              </ul>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+} @else {
+
+  <div class="card">
+    <div class="card-header"><i class="fa-brands fa-artstation fa-lg"></i> PRODUCTO - {{ setting.operation }}</div>
+    <div class="card-body">
+
+      <div class="card">
+
+        <div class="card-header card-header-registro">
+          <div class="btn-group" role="group">
+            @if (!setting.onlyView) {
+              @if (model.value.id == '') {
+                <button (click)="save()" type="button" class="btn btn-primary"><i class="far fa-save fa-lg"></i>&nbsp; Guardar &nbsp;</button>
+              }@else {
+                <button (click)="save()" type="button" class="btn btn-primary"><i class="far fa-save fa-lg"></i> Actualizar</button>
+              }
+            }
+            <button (click)="exit()" type="button" class="btn btn-default"><i class="fas fa-sign-out-alt fa-lg"></i> Salir &nbsp;&nbsp;</button>
+          </div>
+        </div>
+
+        <div class="card-body card-body-registro">
+
+          <div [formGroup]="model">
+
+            <div class="row">
+              <div class="col-1">
+                <label for="id">CÓDIGO</label>
+                <input formControlName="id" id="id" type="text" class="form-control form-control-sm text-center bg-custom" readonly>
+              </div>
+            </div>
+
+            <div class="row mt-2">
+              <div class="col-1">
+                <label for="alternativeCode">CODIGO ALTERNATIVO</label>
+                <input formControlName="alternativeCode" id="alternativeCode" type="text" class="form-control form-control-sm text-uppercase" autocomplete="off" maxlength="10">
+              </div>
+            </div>
+
+            <div class="row mt-2">
+              <div class="col-4">
+                <label for="name">NOMBRE</label>
+                <input formControlName="name" id="name" type="text" class="form-control form-control-sm text-uppercase" autocomplete="off" maxlength="50"
+                  [ngClass]="{'is-invalid': model.get('name')?.errors && model.get('name')?.touched}">
+                  @if(model.get('name')?.hasError('required')){<div class="invalid-feedback">Campo requerido</div>}
+              </div>
+            </div>
+
+            <div class="row mt-2">
+
+              <div class="col-2" formGroupName="brand">
+                <label for="brand">MARCA</label>
+
+                <div class="input-group">
+
+                  <select formControlName="id" id="brand" class="form-select"
+                    [ngClass]="{ 'is-invalid': model.get('brand')?.get('id')?.errors && model.get('brand')?.get('id')?.touched }">
+
+                    <option value="">[SELECIONE]</option>
+                    @for (item of setting.lstBrand; track $index) {
+                      <option [value]="item.id">{{item.name}}</option>
+                    }
+                  </select>
+                  <button (click)="manageBrand()" type="button" class="btn btn-default btn-custom"><i class="fa-solid fa-file-circle-plus fa-lg"></i></button>
+                  @if(model.get('brand')?.get('id')?.hasError('required')){<div class="invalid-feedback">Campo requerido</div>}
+
+                </div>
+
+              </div>
+
+              <div class="col-2" formGroupName="unitMeasure">
+                <label for="unitMeasure">UND. MEDIDA</label>
+
+                <div class="input-group">
+
+                  <select formControlName="id" id="unitMeasure" class="form-select"
+                    [ngClass]="{ 'is-invalid': model.get('unitMeasure')?.get('id')?.errors && model.get('unitMeasure')?.get('id')?.touched }">
+
+                    <option value="">[SELECIONE]</option>
+                    @for (item of setting.lstUnitMeasure; track $index) {
+                      <option [value]="item.id">{{item.name}}</option>
+                    }
+                  </select>
+                  <button (click)="manageUnitMeasure()" type="button" class="btn btn-default btn-custom"><i class="fa-solid fa-file-circle-plus fa-lg"></i></button>
+                  @if(model.get('unitMeasure')?.get('id')?.hasError('required')){<div class="invalid-feedback">Campo requerido</div>}
+
+                </div>
+
+              </div>
+
+            </div>
+
+            <div class="row mt-2">
+              <div class="col-1">
+                <label for="activo">ESTADO</label>
+                <select formControlName="active" id="active" class="form-select">
+                  <option [value]=1>ACTIVO</option>
+                  <option [value]=0>INACTIVO</option>
+                </select>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+}

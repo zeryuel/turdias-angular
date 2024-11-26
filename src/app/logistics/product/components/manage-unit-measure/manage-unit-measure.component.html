@@ -1,0 +1,105 @@
+<ngx-spinner [name]="spinnerName" bdColor="rgba(0, 0, 0, 0.8)" size="medium" color="#fff" type="square-jelly-box"
+  [fullScreen]="false">
+  <p style="color: white"> Cargando... </p>
+</ngx-spinner>
+
+<div class="modal-header">
+  <div class="modal-title"><i class="fa-brands fa-artstation"></i> ADMINISTRAR - UNIDADES DE MEDIDA</div>
+  <button type="button" (click)="cancel()" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+
+<div class="modal-body">
+
+  <div [formGroup]="paged" class="card-body">
+
+    <div class="row">
+
+      <div class="col-4 mt-3">
+
+        <div class="btn-group" role="group">
+          <button (click)="search()" type="button" class="btn btn-primary"><i class="far fa-file fa-lg"></i> Agregar</button>
+          <button (click)="update()" [disabled]="setting.recordId == 0" type="button" class="btn btn-default"><i class="far fa-edit fa-lg"></i> Modificar</button>
+          <button (click)="delete()" [disabled]="setting.recordId == 0" type="button" class="btn btn-default"><i class="far fa-trash-alt fa-lg"></i> Eliminar</button>
+        </div>
+
+      </div>
+
+      <div class="col-6">
+        <label for="filterName">NOMBRE</label>
+        <input id="filterName" #filterName type="text" class="form-control form-control-sm text-uppercase" autocomplete="off" maxlength="50"
+          (keyup.enter)="search()" (keypress)="onKeyPressAlfaNumerico($event)"
+          [ngClass]="{'is-invalid': paged.get('lstFilter')?.get('0')?.get('value')?.errors}" />
+
+          @if (paged.get('lstFilter')?.get('0')?.get('value')?.hasError('pattern')) {
+            <div class="invalid-feedback">Ingrese solo caracteres validos</div>
+          }
+      </div>
+
+      <div class="col-2">
+        <label for="filterState">ESTADO</label>
+        <select id="filterState" (change)="search()" class="form-select" tabindex="2">
+          <option value="">[TODOS]</option>
+          <option value=1>ACTIVO</option>
+          <option value=0>INACTIVO</option>
+        </select>
+      </div>
+
+    </div>
+    <hr>
+    <div class="container-tabla" tabindex="0">
+
+      <div class="overflow-auto" [style.height.px]="table.hight">
+        <table class="table table-bordered table-hover">
+          <thead>
+            <tr>
+              @for (item of table.lstColumn; track $index) {
+                <th [width]="item.width" [ngClass]="item.style">{{item.name}}</th>
+              }
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of table.content; track item.id; let i = $index) {
+              <tr [ngClass]="{'bg-seleccion' : setting.recordId == item.id}" (click)="selectRecord(item)">
+                <td class="td-table" [ngClass]="table.lstColumn[0].style"> {{ i + 1 + (table.pageSize * (table.pageNumber - 1)) }} </td>
+                <td class="td-table" [ngClass]="table.lstColumn[1].style"> {{ item.id | number:'3.0' }} </td>
+                <td class="td-table" [ngClass]="table.lstColumn[2].style"> {{ item.name }} </td>
+                <td class="td-table" [ngClass]="table.lstColumn[3].style"> {{ item.active == 1 ? 'ACTIVO' : 'INACTIVO' }} </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <div class="panel-paginado">
+        <div class="row">
+
+          <div class="col-5">
+            <label>
+              <i class="far fa-clone"></i>&nbsp; Mostrando {{ table.startElement }} al {{ table.endElement }} de {{ table.totalElements }} registros
+            </label>
+          </div>
+
+          <div class="col-7">
+            <ul class="pagination justify-content-end">
+              @for (item of table.lstPageNumber; track $index) {
+                <li class={{item.style}}>
+                  <a (click)="paginationManager(item, table)" class="page-link">{{item.value}}</a>
+                </li>
+              }
+            </ul>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<div class="modal-footer">
+  <button (click)="confirm()" [disabled]="setting.recordId == 0" type="button"
+    class="btn btn-sm btn-outline-primary">Confirmar</button>
+  <button (click)="cancel()" type="button" class="btn btn-sm btn-link">Cancelar</button>
+</div>

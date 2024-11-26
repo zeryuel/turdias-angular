@@ -1,0 +1,46 @@
+<div class="card">
+
+  <div class="card-header"><i class="fa-brands fa-artstation"></i> REPORTE DE ORDENES DE TRABAJO</div>
+
+  <div [formGroup]="model" class="card-body">
+
+    <div class="row">
+
+      <div class="col-2">
+        <label for="startDate">FECHA INICIO</label>
+        <div class="input-group">
+          <input formControlName="startDate" id="startDate" type="text" class="form-control form-control-sm" maxlength="10"
+            [bsConfig]="{ containerClass: 'theme-dark-blue', isAnimated: true, showWeekNumbers:false }" #dp="bsDatepicker" bsDatepicker (keypress)="onKeyPressDate($event)"
+            (change)="onChangeInvalidDate($event)"
+            [ngClass]="{'is-invalid': model.get('startDate')?.errors && model.get('startDate')?.touched}">
+          <button (click)="dp.toggle()" [attr.aria-expanded]="dp.isOpen" type="button" class="btn btn-default btn-custom"><i class="far fa-calendar-alt"></i></button>
+          @if (model.get('startDate')?.hasError('required')) {
+            <div class="invalid-feedback">Campo requerido </div>
+          }
+        </div>
+      </div>
+
+      <div class="col-2">
+        <label for="endDate">FECHA FIN</label>
+        <div class="input-group">
+          <input formControlName="endDate" id="endDate" type="text" class="form-control form-control-sm" maxlength="10"
+            [bsConfig]="{ containerClass: 'theme-dark-blue', isAnimated: true, showWeekNumbers:false }" #dp1="bsDatepicker" bsDatepicker (keypress)="onKeyPressDate($event)"
+            (change)="onChangeInvalidDate($event)"
+            [ngClass]="{'is-invalid': model.get('endDate')?.errors && model.get('endDate')?.touched}">
+          <button (click)="dp1.toggle()" [attr.aria-expanded]="dp1.isOpen" type="button" class="btn btn-default btn-custom"><i class="far fa-calendar-alt"></i></button>
+          @if (model.get('endDate')?.hasError('required')) {
+            <div class="invalid-feedback">Campo requerido </div>
+          }
+        </div>
+      </div>
+
+    </div>
+
+    <hr>
+    <div class="btn-group" role="group">
+      <button (click)="reportGeneration()" type="button" class="btn btn-primary"><i class="fas fa-print fa-lg"></i> Generar reporte</button>
+    </div>
+
+  </div>
+
+</div>

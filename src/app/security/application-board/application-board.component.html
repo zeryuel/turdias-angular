@@ -1,0 +1,121 @@
+<nav class="navbar navbar-expand-lg navbar-principal bg-light">
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo01"
+    aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
+    <img class="navbar-brand" src="./assets/images/logo.png" alt="logo" width="35" style="margin-left: .9rem;" />
+    <span style="color: white; margin-left: -.9rem; margin-top: .2rem;">{{nameApplication}}</span>
+  </div>
+
+  <div class="d-flex">
+
+    <label class="text-white" style="font-size: .7rem; margin-top: .5rem; margin-right: 4rem;">
+      <i class="fa-solid fa-user" style="color:white"></i> {{nameUser}}
+    </label>
+
+    <button (click)="exit()" type="button" title="Salir del sistema" class="btn btn-outline-light" style="margin-right: 2rem;">
+      <i class="fas fa-sign-out-alt"></i> &nbsp; SALIR &nbsp;&nbsp;&nbsp;&nbsp;
+    </button>
+
+    <button (click)="loadApplication(1)" type="button" class="btn btn-outline-light">APPS</button>
+  </div>
+
+</nav>
+
+<!-- <nav class="navbar navbar-expand-lg navbar-secundary">
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCustom" style="font-size: .6rem;">
+    <i class="fa fa-bars fa-lg py-1 text-white"></i>
+  </button>
+
+  <div class="navbar-collapse collapse" id="navbarCustom">
+    <div class="col-12 text-end">
+      <label class="text-white" style="font-size: .7rem; margin-right: 2.2rem;">Versión : {{version}}</label>
+    </div>
+  </div>
+</nav> -->
+
+
+  <header>
+    <nav class="navbar bg-dark navbar-expand-lg bg-body-tertiar">
+
+      <div class="container">
+
+        <button class="navbar navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarMegaMenu" aria-controls="navbarMegaMenu" aria-expanded="false" aria-label="Toogle navigation">
+          <span class="navbar-toggler-icon text-white"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarMegaMenu">
+          <ul class="navbar-nav">
+            <li><a href="#" class="nav-link px-3 text-white">Home</a></li>
+
+            <li class="dropdown">
+              <a href="#" class="nav-link px-3 text-white dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"> Tutorials</a>
+              <ul class="dropdown-menu mega-menu dropdown-menu-dark">
+                <div class="row">
+
+                  <div class="col-3">
+                    <li>
+                      <h6 class="dropdown-header px-3">Configuración</h6>
+                    </li>
+                    <li><a href="#" class="nav-link px-4 text-white">HTML Tutorials</a></li>
+                    <li><a href="#" class="nav-link px-4 text-white">CSS Tutorials</a></li>
+                    <li><a href="#" class="nav-link px-4 text-white">JAVAscript Tutorials</a></li>
+                    <li><a href="#" class="nav-link px-4 text-white">Ajax Tutorials</a></li>
+                  </div>
+
+                  <div class="col-3">
+                    <li>
+                      <h6 class="dropdown-header px-3">Mantenimiento</h6>
+                    </li>
+                    <li><a href="#" class="nav-link px-4 text-white">PHP Tutorials</a></li>
+                    <li><a href="#" class="nav-link px-4 text-white">Python Tutorials</a></li>
+                    <li><a href="#" class="nav-link px-4 text-white">JAVA Tutorials</a></li>
+                    <li><a href="#" class="nav-link px-4 text-white">C/C++ Tutorials</a></li>
+                    <li><a href="#" class="nav-link px-4 text-white">SQL Tutorials</a></li>
+                  </div>
+
+                  <div class="col-3">
+                    <li>
+                      <h6 class="dropdown-header px-3">Reportes</h6>
+                    </li>
+                    <li><a href="#" class="nav-link px-4 text-white">Node Tutorials</a></li>
+                    <li><a href="#" class="nav-link px-4 text-white">react Tutorials</a></li>
+                    <li><a href="#" class="nav-link px-4 text-white">Veu Tutorials</a></li>
+                    <li><a href="#" class="nav-link px-4 text-white">Bootstrap Tutorials</a></li>
+                    <li><a href="#" class="nav-link px-4 text-white">Twiling Tutorials</a></li>
+                  </div>
+
+                  <div class="col-3">
+                    <li>
+                      <h6 class="dropdown-header px-3">Ayuda</h6>
+                    </li>
+                    <li><a href="#" class="nav-link px-4 text-white">Node Tutorials</a></li>
+                    <li><a href="#" class="nav-link px-4 text-white">react Tutorials</a></li>
+                    <li><a href="#" class="nav-link px-4 text-white">Veu Tutorials</a></li>
+                    <li><a href="#" class="nav-link px-4 text-white">Bootstrap Tutorials</a></li>
+                    <li><a href="#" class="nav-link px-4 text-white">Twiling Tutorials</a></li>
+                  </div>
+
+
+
+                </div>
+              </ul>
+            </li>
+
+            <li><a href="#" class="nav-link px-3 text-white">Abaout us</a></li>
+            <li><a href="#" class="nav-link px-3 text-white">Contact us</a></li>
+
+          </ul>
+        </div>
+
+      </div>
+
+    </nav>
+
+  </header>
+
+

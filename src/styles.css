@@ -1,0 +1,277 @@
+@font-face {
+  font-family: 'Roboto';
+  src: url('assets/fonts/Roboto/Roboto-Light.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+html,
+body {
+  background: #e0e5f5;
+  /* font-family: Roboto; */
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+
+/*************************** Estilos botones y cards **********************/
+.btn {
+  font-size: .68rem;
+  padding: 0.25rem 0.5rem;
+}
+
+.btn-custom {
+  padding: 0.15rem 0.5rem 0.15rem 0.5rem;
+}
+
+.btn-primary {
+  background: rgb(109, 179, 242);
+  background: -moz-linear-gradient(top, rgba(109, 179, 242, 1) 0%, rgba(84, 163, 238, 1) 50%, rgba(54, 144, 240, 1) 51%, rgba(30, 105, 222, 1) 100%);
+  background: -webkit-linear-gradient(top, rgba(109, 179, 242, 1) 0%, rgba(84, 163, 238, 1) 50%, rgba(54, 144, 240, 1) 51%, rgba(30, 105, 222, 1) 100%);
+  background: linear-gradient(to bottom, rgba(109, 179, 242, 1) 0%, rgba(84, 163, 238, 1) 50%, rgba(54, 144, 240, 1) 51%, rgba(30, 105, 222, 1) 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#6db3f2', endColorstr='#1e69de', GradientType=0);
+}
+
+.btn-default {
+  background: rgb(255, 255, 255);
+  background: -moz-linear-gradient(top, rgba(255, 255, 255, 1) 0%, rgba(246, 246, 246, 1) 47%, rgba(237, 237, 237, 1) 100%);
+  background: -webkit-linear-gradient(top, rgba(255, 255, 255, 1) 0%, rgba(246, 246, 246, 1) 47%, rgba(237, 237, 237, 1) 100%);
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 1) 0%, rgba(246, 246, 246, 1) 47%, rgba(237, 237, 237, 1) 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#ededed', GradientType=0);
+  border: .01rem solid #C5D5DF;
+  color: rgba(0, 0, 0, 0.666);
+}
+
+.btn-danger {
+  background: #f3c5bd;
+  background: -moz-linear-gradient(top, #f3c5bd 0%, #e86c57 50%, #ea2803 51%, #ff6600 75%, #c72200 100%);
+  background: -webkit-linear-gradient(top, #f3c5bd 0%, #e86c57 50%, #ea2803 51%, #ff6600 75%, #c72200 100%);
+  background: linear-gradient(to bottom, #f3c5bd 0%, #e86c57 50%, #ea2803 51%, #ff6600 75%, #c72200 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#f3c5bd', endColorstr='#c72200', GradientType=0);
+}
+
+.btn-secondary {
+  background: rgb(206, 220, 231);
+  background: -moz-linear-gradient(top, rgba(206, 220, 231, 1) 0%, rgba(89, 106, 114, 1) 100%);
+  background: -webkit-linear-gradient(top, rgba(206, 220, 231, 1) 0%, rgba(89, 106, 114, 1) 100%);
+  background: linear-gradient(to bottom, rgba(206, 220, 231, 1) 0%, rgba(89, 106, 114, 1) 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#cedce7', endColorstr='#596a72', GradientType=0);
+}
+
+.card-header {
+  background: #fefefe;
+  background: -moz-linear-gradient(top, #fefefe 0%, #fdfefd 8%, #f6f7fc 23%, #e3e8f4 50%, #d0d8eb 54%, #d1d9ec 65%, #eaecfb 100%);
+  background: -webkit-linear-gradient(top, #fefefe 0%, #fdfefd 8%, #f6f7fc 23%, #e3e8f4 50%, #d0d8eb 54%, #d1d9ec 65%, #eaecfb 100%);
+  background: linear-gradient(to bottom, #fefefe 0%, #fdfefd 8%, #f6f7fc 23%, #e3e8f4 50%, #d0d8eb 54%, #d1d9ec 65%, #eaecfb 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fefefe', endColorstr='#eaecfb', GradientType=0);
+  height: 1.8rem;
+  font-size: .7rem;
+  color: #505559;
+}
+
+.card-body {
+  padding: .6rem .8rem .6rem .8rem;
+  min-height: 36rem;
+}
+
+.card-header-registro {
+  background: rgb(255, 255, 255);
+  background: -moz-linear-gradient(top, rgba(255, 255, 255, 1) 0%, rgba(243, 243, 243, 1) 50%, rgba(237, 237, 237, 1) 51%, rgba(255, 255, 255, 1) 100%);
+  background: -webkit-linear-gradient(top, rgba(255, 255, 255, 1) 0%, rgba(243, 243, 243, 1) 50%, rgba(237, 237, 237, 1) 51%, rgba(255, 255, 255, 1) 100%);
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 1) 0%, rgba(243, 243, 243, 1) 50%, rgba(237, 237, 237, 1) 51%, rgba(255, 255, 255, 1) 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#ffffff', GradientType=0);
+  height: 2.8rem;
+  padding-top: .6rem;
+}
+/*************************** Estilos botones y cards **********************/
+
+
+
+/*************************** Estilos modales **********************/
+.modal-header {
+  background: #fefefe;
+  background: -moz-linear-gradient(top, #fefefe 0%, #fdfefd 8%, #f6f7fc 23%, #e3e8f4 50%, #d0d8eb 54%, #d1d9ec 65%, #eaecfb 100%);
+  background: -webkit-linear-gradient(top, #fefefe 0%, #fdfefd 8%, #f6f7fc 23%, #e3e8f4 50%, #d0d8eb 54%, #d1d9ec 65%, #eaecfb 100%);
+  background: linear-gradient(to bottom, #fefefe 0%, #fdfefd 8%, #f6f7fc 23%, #e3e8f4 50%, #d0d8eb 54%, #d1d9ec 65%, #eaecfb 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fefefe', endColorstr='#eaecfb', GradientType=0);
+  padding: .4rem .4rem .4rem 1rem;
+  font-size: .65rem;
+  color: #505559;
+}
+
+.modal-header .btn-close {
+  padding-left: 0.9rem;
+  font-size: 0.8rem;
+}
+
+.modal-header .modal-title {
+  padding-top: .2rem;
+}
+
+.modal-body {
+  padding-top: 0.2rem;
+}
+
+.modal-dialog-custom {
+  margin-top: 14rem;
+}
+
+.modal-xl-custom {
+  max-width: 950px;
+}
+/*************************** Estilos modales **********************/
+
+
+
+/*************************** Estilos varios **********************/
+.container-fluid {
+  padding-top: 0.6rem;
+}
+
+.form-control-sm {
+  font-size: .6rem;
+}
+
+.form-select {
+  font-size: .6rem;
+  padding: .25rem 2.25rem .25rem .75rem
+}
+
+.img-thumbnail {
+  max-width: 96%;
+}
+
+label {
+  font-size: .57rem;
+}
+
+hr {
+  margin-top: .8rem;
+  margin-bottom: .8rem;
+  color: #bfc6cc;
+}
+
+.bg-custom {
+  background-color: #fcedc4;
+}
+
+.bg-read-only {
+  background-color: #e0e5f5;
+}
+/*************************** Estilos varios **********************/
+
+
+
+/********************* Estilos date picker ***********************/
+.bs-datepicker-head {
+  font-size: .7rem;
+}
+
+.bs-datepicker-body table th {
+  font-size: .7rem;
+}
+
+.bs-datepicker-body table td span {
+  font-size: .7rem;
+}
+/********************* Estilos date picker ***********************/
+
+
+
+/******************** Estilos validacion en cajas de texto **************/
+.invalid-feedback {
+  margin-bottom: -.7rem;
+  margin-top: 0rem;
+  font-size: 0.65rem;
+}
+/******************** Estilos validacion en cajas de texto **************/
+
+
+
+/*************************** Estilos tabla **********************/
+table {
+  font-size: .6rem;
+  border-spacing: 0 2px;
+}
+
+th {
+  background: rgb(255, 255, 255);
+  background: -moz-linear-gradient(top, rgba(255, 255, 255, 1) 0%, rgba(246, 246, 246, 1) 47%, rgba(237, 237, 237, 1) 100%);
+  background: -webkit-linear-gradient(top, rgba(255, 255, 255, 1) 0%, rgba(246, 246, 246, 1) 47%, rgba(237, 237, 237, 1) 100%);
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 1) 0%, rgba(246, 246, 246, 1) 47%, rgba(237, 237, 237, 1) 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#ededed', GradientType=0);
+  border-bottom: hidden !important;
+  border-top: hidden !important;
+  height: 2rem;
+  font-size: .6rem;
+  position: sticky;
+  top: 0;
+}
+
+.container-tabla {
+  border: .1rem solid #F0F0F0;
+}
+
+.container-tabla:focus {
+  border-color: #c3d6f3;
+  box-shadow: 0 0px 0px #c3d6f3 inset, 0 0 10px #c3d6f3;
+  outline: none;
+}
+
+.panel-paginado {
+  background: rgb(255, 255, 255);
+  background: -moz-linear-gradient(top, rgba(255, 255, 255, 1) 0%, rgba(246, 246, 246, 1) 47%, rgba(237, 237, 237, 1) 100%);
+  background: -webkit-linear-gradient(top, rgba(255, 255, 255, 1) 0%, rgba(246, 246, 246, 1) 47%, rgba(237, 237, 237, 1) 100%);
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 1) 0%, rgba(246, 246, 246, 1) 47%, rgba(237, 237, 237, 1) 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#ededed', GradientType=0);
+  height: 3.2rem;
+  padding: .8rem 1rem 0rem 1rem;
+  border-top: .01rem solid #F0F0F0;
+}
+
+.page-link {
+  font-size: .6rem;
+  cursor: pointer;
+}
+
+.panel-paginado label {
+  font-size: .6rem;
+}
+
+.bg-seleccion td{
+  background-color: #516EA1;
+  color: white;
+}
+/*************************** Estilos tabla **********************/
+
+
+
+/*************************** Estilos tabla impresion **********************/
+.th-print {
+  background: #CED4DA;
+  height: 2rem;
+  font-size: .56rem;
+  border-top: .01rem solid #CED4DA !important;
+  border-bottom: .01rem solid #CED4DA !important;
+}
+
+.td-print {
+  font-size: .5rem;
+}
+/*************************** Estilos tabla impresion **********************/
+
+
+
+/*************************** Estilos de arbol de recursos **********************/
+.list-group.inner li {
+  border: none;
+  padding-top: .1rem;
+  padding-bottom: .1rem;
+}
+
+label .form-check-input {
+  width: 1.5em;
+  height: 1.5em;
+  margin-top: 0rem;
+}
+/*************************** Estilos de arbol de recursos **********************/
+

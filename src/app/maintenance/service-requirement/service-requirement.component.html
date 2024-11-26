@@ -1,0 +1,261 @@
+@if (!setting.mainScreen) {
+
+  <div class="card">
+
+    <div class="card-header"><i class="fa-brands fa-artstation fa-lg"></i> REQUERIMIENTO DE SERVICIO</div>
+
+    <div [formGroup]="paged" class="card-body">
+
+      <div formArrayName="lstFilter" class="row">
+
+        <div [formGroupName]="0" class="col-1">
+          <label for="filterId">NUMERO</label>
+          <input formControlName="value" id="filterId" #filterId type="text" class="form-control form-control-sm text-uppercase" maxlength="10" autocomplete="off"
+            (keyup.enter)="search()" (keypress)="onKeyPressAlfaNumerico($event)" [ngClass]="{'is-invalid': paged.get('lstFilter')?.get('0')?.get('value')?.errors}" />
+
+            @if (paged.get('lstFilter')?.get('0')?.get('value')?.hasError('pattern')) {<div class="invalid-feedback">Ingrese solo caracteres validos</div>}
+        </div>
+
+        <div [formGroupName]="1" class="col-3">
+          <label for="filterVehicle">VEHICULO</label>
+          <div class="input-group">
+            <input formControlName="value" type="text" hidden/>
+            <input  [(ngModel)]="setting.filterVehicle" [ngModelOptions]="{standalone: true}" id="filterVehicle" type="text" class="form-control form-control-sm" readonly />
+            <button (click)="searchVehicle()" type="button" class="btn btn-default btn-custom"><i class="fas fa-search"></i></button>
+            <button (click)="cleanVehicle()" type="button" class="btn btn-default btn-custom" title="Limpiar filtro"><i class="fas fa-times"></i></button>
+          </div>
+        </div>
+
+        <div [formGroupName]="2" class="col-4">
+          <label for="filterPersonal">PERSONAL</label>
+          <div class="input-group">
+            <input formControlName="value" type="text" hidden/>
+            <input  [(ngModel)]="setting.filterPersonal" [ngModelOptions]="{standalone: true}" id="filterPersonal" type="text" class="form-control form-control-sm" readonly />
+            <button (click)="searchPersonal()" type="button" class="btn btn-default btn-custom"><i class="fas fa-search"></i></button>
+            <button (click)="cleanPersonal()" type="button" class="btn btn-default btn-custom" title="Limpiar filtro"><i class="fas fa-times"></i></button>
+          </div>
+        </div>
+
+        <div [formGroupName]="3" class="col-2">
+          <label for="filterRangeDate">RANGO DE FECHAS</label>
+          <div class="input-group">
+            <input formControlName="value" type="text" hidden/>
+            <input [(ngModel)]="setting.filterRangeDate" [ngModelOptions]="{standalone: true}" id="filterRangeDate" type="text" class="form-control form-control-sm bg-white" maxlength="10"
+              readonly [bsConfig]="{ containerClass: 'theme-dark-blue', isAnimated: true, showWeekNumbers:false }" #drp="bsDaterangepicker" bsDaterangepicker (bsValueChange)="onChangeRangeDate($event)" />
+
+            <button (click)="drp.toggle()" [attr.aria-expanded]="drp.isOpen" type="button" class="btn btn-default btn-custom"><i class="far fa-calendar-alt"></i></button>
+            <button (click)="cleanRangeDate()" type="button" class="btn btn-default btn-custom" title="Limpiar filtro"><i class="fas fa-times"></i></button>
+          </div>
+        </div>
+
+        <div [formGroupName]="4" class="col-1">
+          <label for="filterState">ESTADO</label>
+          <select formControlName="value" id="filterState" (change)="search()" class="form-select">
+            <option value="">[TODOS]</option>
+            @for (item of setting.lstState; track $index) {
+              <option [value]="item.id">{{item.name}}</option>
+            }
+          </select>
+        </div>
+
+      </div>
+
+      <hr>
+      <div class="btn-group" role="group">
+        <button (click)="search()" type="button" class="btn btn-primary"><i class="fas fa-search fa-lg"></i> Buscar</button>
+        <button (click)="create()" type="button" class="btn btn-default" style="margin-left: .5rem;"><i class="far fa-file fa-lg"></i> Nuevo</button>
+        <button (click)="update()" [disabled]="setting.recordId == 0" type="button" class="btn btn-default"><i class="far fa-edit fa-lg"></i> Modificar</button>
+        <button (click)="delete()" [disabled]="setting.recordId == 0" type="button" class="btn btn-default"><i class="far fa-trash-alt fa-lg"></i> Eliminar</button>
+      </div>
+
+      <hr>
+      <div class="container-tabla" tabindex="0">
+
+        <div class="overflow-auto" [style.height.px]="table.hight">
+          <table class="table table-bordered table-hover">
+            <thead>
+              <tr>
+                @for (item of table.lstColumn; track $index) {
+                  <th [width]="item.width" [ngClass]="item.style">{{item.name}}</th>
+                }
+              </tr>
+            </thead>
+            <tbody>
+              @for (item of table.content; track item.id; let i = $index) {
+                <tr [ngClass]="{'bg-seleccion' : setting.recordId == item.id}" (click)="selectRecord(item)" (dblclick)="update()">
+                  <td class="td-table" [ngClass]="table.lstColumn[0].style"> {{ i + 1 + (table.pageSize * (table.pageNumber - 1)) }} </td>
+                  <td class="td-table" [ngClass]="table.lstColumn[1].style"> {{ ("00000" + item.id).slice(-5) }} </td>
+                  <td class="td-table" [ngClass]="table.lstColumn[2].style"> {{ item.vehicle.plate + ' - ' + item.vehicle.name }}</td>
+                  <td class="td-table" [ngClass]="table.lstColumn[3].style"> {{ item.personalDocumentNumber + ' - ' + item.personalFullName }}</td>
+                  <td class="td-table" [ngClass]="table.lstColumn[4].style"> {{ item.date }} </td>
+                  <td class="td-table" [ngClass]="table.lstColumn[5].style"> {{ item.state.name }}
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <div class="panel-paginado">
+          <div class="row">
+
+            <div class="col-5">
+              <label>
+                <i class="far fa-clone"></i>&nbsp; Mostrando {{ table.startElement }} al {{ table.endElement }} de {{ table.totalElements }} registros
+              </label>
+            </div>
+
+            <div class="col-2">
+              <div class="row">
+                <label class="col-7 text-end mt-2">Mostrar :</label>
+
+                <div class="col-5">
+                  <select formControlName="pageSize" (change)="search()" class="form-select mt-1">
+                    @for (item of table.lstPageSize; track $index) {
+                      <option [value]="item.id">{{item.name}}</option>
+                    }
+                  </select>
+                </div>
+
+              </div>
+            </div>
+
+            <div class="col-5">
+              <ul class="pagination justify-content-end">
+                @for (item of table.lstPageNumber; track $index) {
+                  <li class={{item.style}}>
+                    <a (click)="paginationManager(item, table)" class="page-link">{{item.value}}</a>
+                  </li>
+                }
+              </ul>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+} @else {
+
+  <div class="card">
+    <div class="card-header"><i class="fa-brands fa-artstation fa-lg"></i> REQUERIMIENTO DE SERVICIO - {{ setting.operation }}</div>
+    <div class="card-body">
+
+      <div class="card">
+
+        <div class="card-header card-header-registro">
+          <div class="btn-group" role="group">
+            @if (!setting.onlyView) {
+              @if (model.value.id == '') {
+                <button (click)="save()" type="button" class="btn btn-primary"><i class="far fa-save fa-lg"></i>&nbsp; Guardar &nbsp;</button>
+              }@else {
+                <button (click)="save()" type="button" class="btn btn-primary"><i class="far fa-save fa-lg"></i> Actualizar</button>
+              }
+            }
+            <button (click)="exit()" type="button" class="btn btn-default"><i class="fas fa-sign-out-alt fa-lg"></i> Salir &nbsp;&nbsp;</button>
+          </div>
+        </div>
+
+        <div class="card-body card-body-registro">
+
+          <div [formGroup]="model">
+
+            <div class="row">
+
+              <div class="col-1">
+                <label for="id">CÓDIGO</label>
+                <input formControlName="id" id="id" type="text" class="form-control form-control-sm text-center bg-custom"
+                  readonly>
+              </div>
+
+            </div>
+
+            <div class="row mt-2">
+
+              <div class="col-5" formGroupName="vehicle">
+                <label for="vehiclePlate" class="col-3">PLACA</label>
+                <label for="vehicleName" class="col-9">VEHICULO</label>
+                <div class="input-group">
+                  <input formControlName="plate" id="vehiclePlate" type="text" class="form-control form-control-sm" readonly
+                    [ngClass]="{'is-invalid': model.get('vehicle')?.get('id')?.errors && model.get('vehicle')?.get('id')?.touched}"/>
+                  <input formControlName="name" id="vehicleName" type="text" class="form-control form-control-sm  w-50" readonly
+                    [ngClass]="{'is-invalid': model.get('vehicle')?.get('id')?.errors && model.get('vehicle')?.get('id')?.touched}"/>
+                  <input formControlName="id" id="vehicleId" type="text" class="form-control form-control-sm" hidden/>
+                  <button (click)="searchVehicleReg()" type="button" class="btn btn-default btn-custom"><i class="fas fa-search"></i></button>
+                  <button (click)="cleanVehicleReg()" type="button" class="btn btn-default btn-custom" title="Limpiar filtro"><i class="fas fa-times"></i></button>
+
+                  <div *ngIf="model.get('vehicle')?.get('id')?.hasError('required')" class="invalid-feedback">Campo requerido </div>
+
+                </div>
+              </div>
+
+            </div>
+
+            <div class="row mt-2">
+
+              <div class="col-5">
+                <label for="personalDocumentNumber" class="col-3">DNI</label>
+                <label for="personalDocumentNumber" class="col-9">PERSONAL</label>
+                <div class="input-group">
+                  <input formControlName="personalDocumentNumber" id="personalDocumentNumber" type="text" class="form-control form-control-sm" readonly
+                    [ngClass]="{'is-invalid': model.get('idPersonal')?.errors && model.get('idPersonal')?.touched}"/>
+                  <input formControlName="personalFullName" id="personalFullName" type="text" class="form-control form-control-sm  w-50" readonly
+                    [ngClass]="{'is-invalid': model.get('idPersonal')?.errors && model.get('idPersonal')?.touched}"/>
+                  <input formControlName="id" id="idPersonal" type="text" class="form-control form-control-sm" hidden/>
+                  <button (click)="searchPersonalReg()" type="button" class="btn btn-default btn-custom"><i class="fas fa-search"></i></button>
+                  <button (click)="cleanPersonalReg()" type="button" class="btn btn-default btn-custom" title="Limpiar filtro"><i class="fas fa-times"></i></button>
+
+                  <div *ngIf="model.get('idPersonal')?.hasError('required')" class="invalid-feedback">Campo requerido </div>
+
+                </div>
+              </div>
+
+            </div>
+
+            <div class="row mt-2">
+
+              <div class="col-2">
+                <label for="date">FECHA</label>
+                <div class="input-group">
+                  <input formControlName="date" id="date" type="text" class="form-control form-control-sm" maxlength="10"
+                    [bsConfig]="{ containerClass: 'theme-dark-blue', isAnimated: true, showWeekNumbers:false }" #dp="bsDatepicker" bsDatepicker (keypress)="onKeyPressDate($event)"
+                    (change)="onChangeInvalidDate($event)"
+                    [ngClass]="{'is-invalid': model.get('date')?.errors && model.get('date')?.touched}">
+                  <button (click)="dp.toggle()" [attr.aria-expanded]="dp.isOpen" type="button" class="btn btn-default btn-custom"><i class="far fa-calendar-alt"></i></button>
+
+                  @if (model.get('date')?.hasError('required')) {
+                    <div class="invalid-feedback">Campo requerido </div>
+                  }
+                </div>
+              </div>
+
+            </div>
+
+            <div class="row mt-2">
+
+              <div class="col-6">
+                <label for="description">DESCRIPCION</label>
+                <textarea formControlName="description" id="description" rows="8" cols="50" class="form-control form-control-sm text-uppercase"
+                  maxlength="300" [ngClass]="{'is-invalid': model.get('description')?.errors && model.get('description')?.touched}"></textarea>
+
+                  @if(model.get('description')?.hasError('required')){
+                    <div class="invalid-feedback">Campo requerido</div>
+                  }
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+}

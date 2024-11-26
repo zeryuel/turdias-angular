@@ -1,0 +1,17 @@
+<div class="modal-header">
+  <div class="modal-title">{{titulo}}</div>
+  <button type="button" (click)="bsModalRef.hide()" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+
+<div class="modal-body text-center">
+  <i [ngClass]="icono" aria-hidden="true"></i>
+  <label style="font-size: 0.74rem; font-family: Roboto,Helvetica Neue,sans-serif;" [innerHTML]="texto"></label>
+</div>
+
+<div *ngIf="soloBotonOk" class="modal-footer">
+  <button type="button" class={{boton}} (click)="confirm()">{{textoBoton}}</button>
+</div>
+<div *ngIf="!soloBotonOk" class="modal-footer">
+  <button type="button" class={{boton}} (click)="confirm()">{{textoBoton}}</button>
+  <button type="button" class="btn btn-sm btn-link" (click)="decline()">Cancelar</button>
+</div>

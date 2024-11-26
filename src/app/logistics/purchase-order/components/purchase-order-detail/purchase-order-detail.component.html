@@ -1,0 +1,100 @@
+<div class="modal-header">
+  <div class="modal-title"><i class="fa-brands fa-artstation"></i> EDITAR DETALLE</div>
+  <button type="button" (click)="bsModalRef.hide()" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+
+  <div class="modal-body">
+
+    <div [formGroup]="model">
+
+      <div class="row" style="margin-top: .4rem;">
+        <div class="col-auto"><label style="font-size: 0.65rem; color: #6785B8;"><b>INFORMACIÓN DEL CENTRO DE COSTOS</b></label></div>
+        <div class="col"><hr></div>
+      </div>
+
+      <div formGroupName="costCenter">
+        <label for="costCenterName" class="col-12">CENTRO DE COSTOS</label>
+        <div class="input-group">
+          <input formControlName="id" type="text" hidden/>
+          <input formControlName="name" id="costCenterName" type="text" class="form-control form-control-sm" readonly
+            [ngClass]="{'is-invalid': model.get('costCenter')?.get('id')?.errors && model.get('costCenter')?.get('id')?.touched}" />
+          <button (click)="searchCostCenter()" type="button" class="btn btn-default btn-custom"><i class="fas fa-search"></i></button>
+          <button (click)="cleanCostCenter()" type="button" class="btn btn-default btn-custom" title="Limpiar filtro"><i class="fas fa-times"></i></button>
+
+          @if (model.get('costCenter')?.get('id')?.hasError('required')) {<div class="invalid-feedback">Campo requerido </div>}
+        </div>
+      </div>
+
+      <div class="row mt-2" style="margin-top: .4rem;">
+        <div class="col-auto"><label style="font-size: 0.65rem; color: #6785B8;"><b>INFORMACIÓN DEL PRODUCTO</b></label></div>
+        <div class="col"><hr></div>
+      </div>
+
+      <div formGroupName="product">
+        <label for="id" class="col-1">CÓDIGO</label>
+        <label for="name" class="col-7">PRODUCTO</label>
+        <label for="brand" class="col-2">MARCA</label>
+        <label for="unidadMedida" class="col-2">UND. MEDIDA</label>
+        <div class="input-group">
+          <input formControlName="id" id="id" type="text" class="form-control form-control-sm" readonly
+            [ngClass]="{'is-invalid': model.get('product')?.get('id')?.errors && model.get('product')?.get('id')?.touched}" />
+
+          <input formControlName="name" id="name" type="text" class="form-control form-control-sm bg-white text-uppercase w-50"
+            readonly [ngClass]="{'is-invalid': model.get('product')?.get('id')?.errors && model.get('product')?.get('id')?.touched}" />
+
+          <div formGroupName="brand">
+            <input formControlName="name" id="name" type="text" class="form-control form-control-sm bg-white" readonly
+              [ngClass]="{'is-invalid': model.get('product')?.get('id')?.errors && model.get('product')?.get('id')?.touched}" />
+          </div>
+
+          <div formGroupName="unitMeasure">
+            <input formControlName="name" id="name" type="text" class="form-control form-control-sm bg-white" readonly
+              [ngClass]="{'is-invalid': model.get('product')?.get('id')?.errors && model.get('product')?.get('id')?.touched}" />
+          </div>
+
+          <button (click)="searchProduct()" type="button" class="btn btn-default btn-custom"><i class="fas fa-search"></i></button>
+          <button (click)="cleanProduct()" type="button" class="btn btn-default btn-custom" title="Limpiar filtro"><i class="fas fa-times"></i></button>
+          <!-- @if ("model.get('id')?.errors") {
+            <div class="invalid-feedback">
+              @if ("model.get('id')?.hasError('required')") {<div>Campos requeridos</div>}
+            </div>
+          } -->
+        </div>
+      </div>
+
+      <div class="row mt-2">
+
+        <div class="col-2">
+          <label for="amount">CANTIDAD</label>
+          <input formControlName="amount" id="amount" #txtAmount type="text" maxlength="5" class="form-control form-control-sm"
+            (keyup.enter)="onKeyUpAmount()" (keypress)="onKeyPressNumeros($event)"
+            [ngClass]="{'is-invalid':model.get('amount')?.errors && model.get('amount')?.touched}">
+            <!-- @if ("model.get('amount')?.hasError('required')") {<div class="invalid-feedback">Campo requerido</div>} -->
+        </div>
+
+        <div class="col-2">
+          <label for="unitValue">VALOR UNITARIO</label>
+          <input formControlName="unitValue" id="unitValue" #txtUnitValue type="text" maxlength="11" class="form-control form-control-sm"
+            (keyup.enter)="onKeyUpUnitValue()" (keypress)="onKeyPressDecimales($event)"
+            [ngClass]="{'is-invalid':model.get('unitValue')?.errors && model.get('unitValue')?.touched}">
+          <!-- @if ("model.get('unitValue')?.hasError('required')") {<div class="invalid-feedback">Campo requerido</div>} -->
+        </div>
+
+        <div class="col-3">
+          <label for="subTotal">SUB TOTAL</label>
+          <input formControlName="subTotal" id="subTotal" type="text" class="form-control form-control-sm bg-light text-right" readonly>
+        </div>
+
+      </div>
+
+      <br>
+
+    </div>
+
+  </div>
+
+  <div class="modal-footer">
+    <button (click)="confirm()" #btnConfirm type="button" class="btn btn-sm btn-outline-primary">Confirmar</button>
+    <button (click)="cancel()" type="button" class="btn btn-sm btn-link">Cancelar</button>
+</div>
+

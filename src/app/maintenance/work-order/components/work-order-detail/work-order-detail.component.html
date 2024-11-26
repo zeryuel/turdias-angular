@@ -1,0 +1,111 @@
+<div class="modal-header">
+  <div class="modal-title"><i class="fa-brands fa-artstation"></i> EDITAR DETALLE</div>
+  <button type="button" (click)="bsModalRef.hide()" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+
+  <div class="modal-body">
+
+    <div [formGroup]="model">
+
+      <div class="row" style="margin-top: .4rem;">
+        <div class="col-auto"><label style="font-size: 0.65rem; color: #6785B8;"><b>INFORMACIÓN DEL TRABAJO</b></label></div>
+        <div class="col"><hr></div>
+      </div>
+
+      <div class="row">
+
+        <div class="col-10" formGroupName="work">
+          <label for="workId" class="col-3">CODIGO</label>
+          <label for="workName" class="col-9">TRABAJO</label>
+          <div class="input-group">
+            <input formControlName="id" id="workId" type="text" class="form-control form-control-sm" readonly
+            [ngClass]="{'is-invalid': model.get('work')?.get('id')?.errors && model.get('work')?.get('id')?.touched}"/>
+
+            <input formControlName="name" id="workName" type="text" class="form-control form-control-sm  w-50" readonly
+              [ngClass]="{'is-invalid': model.get('work')?.get('id')?.errors && model.get('work')?.get('id')?.touched}"/>
+
+            <button (click)="searchWork()" type="button" class="btn btn-default btn-custom"><i class="fas fa-search"></i></button>
+            <button (click)="cleanWork()" type="button" class="btn btn-default btn-custom" title="Limpiar filtro"><i class="fas fa-times"></i></button>
+
+            <div *ngIf="model.get('work')?.get('id')?.hasError('required')" class="invalid-feedback">Campo requerido </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="row" style="margin-top: .6rem;">
+        <div class="col-auto"><label style="font-size: 0.65rem; color: #6785B8;"><b>INFORMACIÓN DE LOS MECANICOS / TECNICOS</b></label></div>
+        <div class="col"><hr></div>
+      </div>
+
+      <div class="row">
+
+        <div class="col-10" formGroupName="diagnosticMechanic">
+          <label for="diagnosticMechanicId" class="col-3">CODIGO</label>
+          <label for="diagnosticMechanicName" class="col-9">MECANICO DIAGNOSTICA</label>
+          <div class="input-group">
+            <input formControlName="id" id="diagnosticMechanicId" type="text" class="form-control form-control-sm" readonly
+              [ngClass]="{'is-invalid': model.get('diagnosticMechanic')?.get('id')?.errors && model.get('diagnosticMechanic')?.get('id')?.touched}"/>
+
+            <input formControlName="fullName" id="diagnosticMechanicName" type="text" class="form-control form-control-sm w-50" readonly
+              [ngClass]="{'is-invalid': model.get('diagnosticMechanic')?.get('id')?.errors && model.get('diagnosticMechanic')?.get('id')?.touched}"/>
+
+            <button (click)="searchDiagnosticMechanic()" type="button" class="btn btn-default btn-custom"><i class="fas fa-search"></i></button>
+            <button (click)="cleanDiagnosticMechanic()" type="button" class="btn btn-default btn-custom" title="Limpiar filtro"><i class="fas fa-times"></i></button>
+
+            <div *ngIf="model.get('diagnosticMechanic')?.get('id')?.hasError('required')" class="invalid-feedback">Campo requerido </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="row mt-2">
+
+        <div class="col-10" formGroupName="mechanic">
+          <label for="mechanicId" class="col-3">CODIGO</label>
+          <label for="mechanicName" class="col-9">MECANICO/TECNICO</label>
+          <div class="input-group">
+            <input formControlName="id" id="mechanicId" type="text" class="form-control form-control-sm" readonly
+              [ngClass]="{'is-invalid': model.get('mechanic')?.get('id')?.errors && model.get('mechanic')?.get('id')?.touched}"/>
+
+            <input formControlName="fullName" id="mechanicName" type="text" class="form-control form-control-sm w-50" readonly
+              [ngClass]="{'is-invalid': model.get('mechanic')?.get('id')?.errors && model.get('mechanic')?.get('id')?.touched}"/>
+
+            <button (click)="searchMechanic()" type="button" class="btn btn-default btn-custom"><i class="fas fa-search"></i></button>
+            <button (click)="cleanMechanic()" type="button" class="btn btn-default btn-custom" title="Limpiar filtro"><i class="fas fa-times"></i></button>
+
+            <div *ngIf="model.get('mechanic')?.get('id')?.hasError('required')" class="invalid-feedback">Campo requerido </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="row mt-2">
+
+        <div class="col-2">
+          <label for="startTime">HORA INICIO</label>
+          <input formControlName="startTime" id="startTime" type="text" maxlength="10" class="form-control form-control-sm"
+            [ngClass]="{'is-invalid':model.get('startTime')?.errors && model.get('startTime')?.touched}">
+
+          <div *ngIf="model.get('startTime')?.hasError('required')" class="invalid-feedback">Campo requerido</div>
+        </div>
+
+        <div class="col-2">
+          <label for="endTime">HORA FIN</label>
+          <input formControlName="endTime" id="endTime" type="text" maxlength="10" class="form-control form-control-sm"
+            [ngClass]="{'is-invalid':model.get('endTime')?.errors && model.get('endTime')?.touched}">
+
+          <div *ngIf="model.get('endTime')?.hasError('required')" class="invalid-feedback">Campo requerido</div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="modal-footer">
+    <button (click)="confirm()" type="button" class="btn btn-sm btn-outline-primary">Confirmar</button>
+    <button (click)="cancel()" type="button" class="btn btn-sm btn-link">Cancelar</button>
+</div>
+

@@ -1,0 +1,422 @@
+@if (!setting.mainScreen) {
+
+  <div class="card">
+
+    <div class="card-header"><i class="fa-brands fa-artstation fa-lg"></i> COMPROBANTE DE PAGO</div>
+
+    <div [formGroup]="paged" class="card-body">
+
+      <div formArrayName="lstFilter" class="row">
+
+        <div [formGroupName]="0" class="col-1">
+          <label for="filterSeries">SERIE</label>
+          <input formControlName="value" id="filterSeries" type="text" class="form-control form-control-sm text-uppercase" maxlength="4" #filterSeries
+                 (keyup.enter)="search()" (keypress)="onKeyPressLetrasNumeros($event)"
+                 [ngClass]="{'is-invalid': paged.get('lstFilter')?.get('0')?.get('value')?.errors}" />
+
+          <div *ngIf="paged.get('lstFilter')?.get('0')?.get('value')?.errors" class="invalid-feedback">
+            <div *ngIf="paged.get('lstFilter')?.get('0')?.get('value')?.hasError('pattern')">Ingrese solo letras y números</div>
+            <div *ngIf="paged.get('lstFilter')?.get('0')?.get('value')?.hasError('minlength')">Mínimo 4 dígitos</div>
+          </div>
+        </div>
+
+        <div [formGroupName]="1" class="col-1">
+          <label for="filterNumber">NÚMERO</label>
+          <input formControlName="value" id="filterNumber" type="text" class="form-control form-control-sm" maxlength="8"
+                 (keyup.enter)="search()" (keypress)="onKeyPressNumeros($event)"
+                 [ngClass]="{'is-invalid': paged.get('lstFilter')?.get('1')?.get('value')?.errors}" />
+
+          <div *ngIf="paged.get('lstFilter')?.get('1')?.get('value')?.hasError('pattern')" class="invalid-feedback">Ingrese solo números</div>
+        </div>
+
+        <div [formGroupName]="2" class="col-2">
+          <label for="filterType">TIPO COMPROBANTE</label>
+          <select formControlName="value" id="filterType" (change)="search()" class="form-select">
+            <option value="">[TODOS]</option>
+            @for (item of setting.lstProofPaymentType; track $index) {
+              <option [value]="item.id">{{item.name}}</option>
+            }
+          </select>
+        </div>
+
+        <div [formGroupName]="3" class="col-4">
+          <label for="filterSupplier">PROVEEDOR</label>
+          <div class="input-group">
+            <input formControlName="value" type="text" hidden/>
+            <input [(ngModel)]="setting.filterSupplier" [ngModelOptions]="{standalone: true}" id="filterSupplier" type="text" class="form-control form-control-sm" readonly />
+            <button (click)="searchSupplier()" type="button" class="btn btn-default btn-custom"><i class="fas fa-search"></i></button>
+            <button (click)="cleanSupplier()" type="button" class="btn btn-default btn-custom" title="Limpiar filtro"><i class="fas fa-times"></i></button>
+          </div>
+        </div>
+
+        <div [formGroupName]="4" class="col-2">
+          <label for="filterRangeDate">RANGO DE FECHAS</label>
+          <div class="input-group">
+            <input formControlName="value" type="text" hidden/>
+            <input [(ngModel)]="setting.filterRangeDate" [ngModelOptions]="{standalone: true}" id="filterRangeDate" type="text" class="form-control form-control-sm bg-white" maxlength="10"
+              readonly [bsConfig]="{ containerClass: 'theme-dark-blue', isAnimated: true, showWeekNumbers:false }" #drp="bsDaterangepicker" bsDaterangepicker (bsValueChange)="onChangeRangeDate($event)" />
+
+            <button (click)="drp.toggle()" [attr.aria-expanded]="drp.isOpen" type="button" class="btn btn-default btn-custom"><i class="far fa-calendar-alt"></i></button>
+            <button (click)="cleanRangeDate()" type="button" class="btn btn-default btn-custom" title="Limpiar filtro"><i class="fas fa-times"></i></button>
+          </div>
+        </div>
+
+        <div [formGroupName]="5" class="col-2">
+          <label for="filterState">ESTADO</label>
+          <select formControlName="value" (change)="search()" id="filterState" class="form-select">
+            <option value="">[TODOS]</option>
+            @for (item of setting.lstState; track $index) {
+              <option [value]="item.id">{{item.name}}</option>
+            }
+          </select>
+        </div>
+
+      </div>
+
+      <hr>
+      <div class="btn-group" role="group">
+        <button (click)="search()" type="button" class="btn btn-primary"><i class="fas fa-search fa-lg"></i> Buscar</button>
+        <button (click)="create()" type="button" class="btn btn-default" style="margin-left: .5rem;"><i class="far fa-file fa-lg"></i> Nuevo</button>
+        <button (click)="update()" [disabled]="setting.recordId == 0 || setting.onlyView" type="button" class="btn btn-default"><i class="far fa-edit fa-lg"></i> Modificar</button>
+        <button (click)="delete()" [disabled]="setting.recordId == 0 || setting.onlyView" type="button" class="btn btn-default fa-lg"><i class="far fa-trash-alt"></i> Eliminar</button>
+      </div>
+
+      <hr>
+      <div class="container-tabla" tabindex="0">
+
+        <div class="overflow-auto" [style.height.px]="table.hight">
+          <table class="table table-bordered table-hover">
+            <thead>
+              <tr>
+                @for (item of table.lstColumn; track $index) {
+                  <th [width]="item.width" [ngClass]="item.style">{{item.name}}</th>
+                }
+              </tr>
+            </thead>
+            <tbody>
+              @for (item of table.content; track item.id; let i = $index) {
+                <tr [ngClass]="{'bg-seleccion' : setting.recordId == item.id}" (click)="selectRecord(item)" (dblclick)="update()">
+                  <td class="td-table" [ngClass]="table.lstColumn[0].style"> {{ i + 1 + (table.pageSize * (table.pageNumber - 1)) }} </td>
+                  <td class="td-table" [ngClass]="table.lstColumn[1].style"> {{ item.series }} </td>
+                  <td class="td-table" [ngClass]="table.lstColumn[2].style"> {{ ("000000" + item.number).slice(-6) }} </td>
+                  <td class="td-table" [ngClass]="table.lstColumn[3].style"> {{ item.proofPaymentType.name }}</td>
+                  <td class="td-table" [ngClass]="table.lstColumn[4].style"> {{ item.supplier.ruc + ' - ' + item.supplier.reasonSocial }} </td>
+                  <td class="td-table" [ngClass]="table.lstColumn[5].style"> {{ item.emissionDate }} </td>
+                  <td class="td-table" [ngClass]="table.lstColumn[6].style"> {{ ("00000" + item.idPurchaseOrder).slice(-5) }} </td>
+                  <td class="td-table" [ngClass]="table.lstColumn[7].style"> {{ item.currency.shortName }} </td>
+                  <td class="td-table" [ngClass]="table.lstColumn[8].style"> {{ item.saleValue | number: '1.2-2' }} </td>
+                  <td class="td-table" [ngClass]="table.lstColumn[9].style"> {{ item.saleTax | number: '1.2-2' }} </td>
+                  <td class="td-table" [ngClass]="table.lstColumn[10].style"> {{ item.salePrice | number: '1.2-2' }} </td>
+                  <td class="td-table" [ngClass]="table.lstColumn[11].style"> {{ item.state.name }} </td>
+
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <div class="panel-paginado">
+          <div class="row">
+
+            <div class="col-5">
+              <label>
+                <i class="far fa-clone"></i>&nbsp; Mostrando {{ table.startElement }} al {{ table.endElement }} de {{ table.totalElements }} registros
+              </label>
+            </div>
+
+            <div class="col-2">
+              <div class="row">
+                <label class="col-7 text-end mt-2">Mostrar :</label>
+
+                <div class="col-5">
+                  <select formControlName="pageSize" (change)="search()" class="form-select mt-1">
+                    @for (item of table.lstPageSize; track $index) {
+                      <option [value]="item.id">{{item.name}}</option>
+                    }
+                  </select>
+                </div>
+
+              </div>
+            </div>
+
+            <div class="col-5">
+              <ul class="pagination justify-content-end">
+                @for (item of table.lstPageNumber; track $index) {
+                  <li class={{item.style}}>
+                    <a (click)="paginationManager(item, table)" class="page-link">{{item.value}}</a>
+                  </li>
+                }
+              </ul>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+} @else {
+
+  <div class="card">
+    <div class="card-header"><i class="fa-brands fa-artstation fa-lg"></i> COMPROBANTE DE PAGO - {{ setting.operation }}</div>
+    <div class="card-body">
+
+        <div class="card">
+
+            <div class="card-header card-header-registro">
+                <div class="row">
+
+                    <div class="col-6">
+                      <div class="btn-group" role="group">
+                        @if (!setting.onlyView) {
+                          @if (model.value.id == '') {
+                            <button (click)="save()" type="button" class="btn btn-primary"><i class="far fa-save fa-lg"></i>&nbsp; Guardar &nbsp;</button>
+                          }@else {
+                            <button (click)="save()" type="button" class="btn btn-primary"><i class="far fa-save fa-lg"></i> Actualizar</button>
+                          }
+                        }
+                        <button (click)="exit()" type="button" class="btn btn-default"><i class="fas fa-sign-out-alt fa-lg"></i> Salir &nbsp;&nbsp;</button>
+                      </div>
+                    </div>
+
+                    <div class="col-6 text-end" [style.color]="model.value.estado_color">
+                      <i [ngClass]="model.value.estado_icono"></i> &nbsp; <label class="fw-bold" style="font-size: 11px; margin-top: 6px;">{{ model.value.estado_nombre }}</label>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="card-body card-body-registro">
+
+              <div [formGroup]="model">
+
+                <div class="row">
+
+                  <div class="col-2">
+                    <label for="idPurchaseOrder" class="col-12">N° ORDEN DE COMPRA</label>
+                    <div class="input-group">
+                      <input formControlName="idPurchaseOrder" id="idPurchaseOrder" type="text" class="form-control form-control-sm" readonly
+                        [ngClass]="{'is-invalid': model.get('idPurchaseOrder')?.errors && model.get('idPurchaseOrder')?.touched}" />
+                      <input formControlName="idPurchaseOrder" id="idPurchaseOrder" type="text" class="form-control form-control-sm" hidden />
+                      <button (click)="searchPurchaseOrder()" #btnSearchPurchaseOrder type="button" [disabled]="setting.operation == 'MODIFICAR'" class="btn btn-default btn-custom"><i class="fas fa-search"></i></button>
+                      <button (click)="cleanPurchaseOrder()" type="button" [disabled]="setting.operation == 'MODIFICAR'" class="btn btn-default btn-custom" title="Limpiar filtro"><i class="fas fa-times"></i></button>
+                      <div *ngIf="model.get('id_orden_compra')?.hasError('required')" class="invalid-feedback">Campo requerido </div>
+                    </div>
+                  </div>
+
+                  <div class="col-5" formGroupName="supplier">
+                    <label for="supplierRuc" class="col-3">RUC</label>
+                    <label for="supplierReasonSocial" class="col-9">RAZON SOCIAL</label>
+                    <div class="input-group">
+                      <input formControlName="ruc" id="supplierRuc" type="text" class="form-control form-control-sm" readonly />
+                      <input formControlName="reasonSocial" id="supplierReasonSocial" type="text" class="form-control form-control-sm w-50" readonly />
+                    </div>
+                  </div>
+
+                  <div class="col-2" formGroupName="proofPaymentType">
+                    <label for="proofPaymentTypeId">TIPO COMPROBANTE</label>
+                    <select formControlName="id" id="proofPaymentTypeId" class="form-select" #cmbProofPaymentType>
+                      @for (item of setting.lstProofPaymentType; track $index) {
+                        <option [value]="item.id">{{item.name}}</option>
+                      }
+                    </select>
+                  </div>
+
+                  <div class="col-1" formGroupName="currency">
+                    <label for="currencyId">MONEDA</label>
+                    <select formControlName="id" id="currencyId" class="form-select" #cmbCurrency>
+                      <option *ngFor="let option of setting.lstCurrency" [value]="option.id">{{option.shortName}}</option>
+                    </select>
+                  </div>
+
+                  <div class="col-1" formGroupName="paymentMethod">
+                    <label for="paymentMethodId">FORMA PAGO</label>
+                    <select formControlName="id" id="paymentMethodId" class="form-select" #cmbPaymentMethod>
+                      <option *ngFor="let option of setting.lstPaymentMethod" [value]="option.id">{{option.name}}</option>
+                    </select>
+                  </div>
+
+                </div>
+
+                <div class="row mt-2">
+
+                  <div class="col-1">
+                    <label for="series">SERIE</label>
+                    <input formControlName="series" id="series" type="text" class="form-control form-control-sm text-uppercase" maxlength="4"
+                      (keypress)="onKeyPressLetrasNumeros($event)"
+                      [ngClass]="{'is-invalid': model.get('series')?.errors && model.get('series')?.touched}">
+
+                    <div *ngIf="model.get('series')?.errors" class="invalid-feedback">
+                      <div *ngIf="model.get('series')?.hasError('required')">Campo requerido</div>
+                      <div *ngIf="model.get('series')?.hasError('pattern')">Ingrese solo letras y números</div>
+                      <div *ngIf="model.get('series')?.hasError('minlength')">Mínimo 4 dígitos</div>
+                    </div>
+                  </div>
+
+                  <div class="col-1">
+                    <label for="number">NÚMERO</label>
+                    <input formControlName="number" id="number" type="text" class="form-control form-control-sm" maxlength="8"
+                      (keypress)="onKeyPressNumeros($event)"
+                      [ngClass]="{'is-invalid': model.get('number')?.errors && model.get('number')?.touched}">
+
+                    <div *ngIf="model.get('number')?.errors" class="invalid-feedback">
+                      <div *ngIf="model.get('number')?.hasError('required')">Campo requerido</div>
+                      <div *ngIf="model.get('number')?.hasError('pattern')">Ingrese solo números</div>
+                    </div>
+                  </div>
+
+                  <div class="col-2">
+                    <label for="emissionDate">FECHA EMISION</label>
+                    <div class="input-group">
+                      <input formControlName="emissionDate" id="emissionDate" type="text" class="form-control form-control-sm" maxlength="10"
+                        [bsConfig]="{ containerClass: 'theme-dark-blue', isAnimated: true, showWeekNumbers:false }"
+                        #dp="bsDatepicker" bsDatepicker (keypress)="onKeyPressDate($event)" (change)="onChangeInvalidDate($event)"
+                        [ngClass]="{'is-invalid': model.get('emissionDate')?.errors && model.get('emissionDate')?.touched}">
+                      <button (click)="dp.toggle()" [attr.aria-expanded]="dp.isOpen" type="button" class="btn btn-default btn-custom"><i class="far fa-calendar-alt"></i></button>
+
+                      <div *ngIf="model.get('emissionDate')?.hasError('required')" class="invalid-feedback">Campo requerido</div>
+                    </div>
+                  </div>
+
+                  <div class="col-2">
+                    <label for="expirationDate">FECHA VENCIMIENTO</label>
+                    <div class="input-group">
+                      <input formControlName="expirationDate" id="expirationDate" type="text" class="form-control form-control-sm" maxlength="10"
+                        [bsConfig]="{ containerClass: 'theme-dark-blue', isAnimated: true, showWeekNumbers:false }"
+                        #dp1="bsDatepicker" bsDatepicker (keypress)="onKeyPressDate($event)" (change)="onChangeInvalidDate($event)"
+                        [ngClass]="{'is-invalid': model.get('expirationDate')?.errors && model.get('expirationDate')?.touched}">
+                      <button (click)="dp1.toggle()" [attr.aria-expanded]="dp1.isOpen" type="button" class="btn btn-default btn-custom"><i class="far fa-calendar-alt"></i></button>
+
+                      <div *ngIf="model.get('expirationDate')?.hasError('required')" class="invalid-feedback">Campo requerido</div>
+                    </div>
+                  </div>
+
+                </div>
+
+                <div class="row" style="margin-top: 0.8rem;">
+                  <div class="col-auto"><label style="font-size: 0.65rem; color: #6785B8;"><b>LISTADO DE PRODUCTOS</b></label></div>
+                  <div class="col"><hr></div>
+                </div>
+
+                <div class="container-tabla mt-1" tabindex="0">
+
+                  <div class="overflow-auto" [style.height.px]="table2.hight">
+                    <table class="table table-bordered table-hover">
+                      <thead>
+                        <tr>
+                          @for (item of table2.lstColumn; track $index) {
+                            <th [width]="item.width" [ngClass]="item.style">{{item.name}}</th>
+                          }
+                        </tr>
+                      </thead>
+                      <tbody>
+                        @for (item of table2.content; track item.id; let i = $index) {
+                          <tr [ngClass]="{'bg-seleccion' : setting.recordId2 == item.item.id}" (click)="selectRecord2(item)">
+                            <td class="td-table" [ngClass]="table2.lstColumn[0].style"> {{ i + 1 + (table2.pageSize * (table2.pageNumber - 1)) }} </td>
+                            <td class="td-table" [ngClass]="table2.lstColumn[1].style">{{ item.item.id }}</td>
+                            <td class="td-table" [ngClass]="table2.lstColumn[2].style">{{ item.item.name | uppercase }}</td>
+                            <td class="td-table" [ngClass]="table2.lstColumn[3].style">{{ item.item.itemUnitMeasure.name }}</td>
+                            <td class="td-table" [ngClass]="table2.lstColumn[4].style">{{ item.amount }}</td>
+                            <td class="td-table" [ngClass]="table2.lstColumn[5].style">{{ item.unitValue | number: '1.2-2' }}</td>
+                            <td class="td-table" [ngClass]="table2.lstColumn[6].style">{{ item.amount * item.unitValue | number: '1.2-2' }}</td>
+                            <td class="td-table" [ngClass]="table2.lstColumn[7].style">{{ item.amount * item.unitTax | number: '1.2-2' }}</td>
+                            <td class="td-table" [ngClass]="table2.lstColumn[8].style">{{ item.amount * item.unitPrice | number: '1.2-2' }}</td>
+                          </tr>
+                        }
+                      </tbody>
+                    </table>
+                  </div>
+
+                  <div class="panel-paginado">
+                    <div class="row">
+
+                      <div class="col-6">
+                        <label>
+                          <i class="far fa-clone"></i>&nbsp; Mostrando {{ table2.totalElements }} registros
+                        </label>
+                      </div>
+
+                      <div class="col-6">
+
+                        <div class="row">
+
+                          <div class="col-4">
+
+                            <div class="row">
+
+                              <div class="col-6 text-end">
+                                <label class="fw-bold" for="saleValue" style="font-size:.56rem">VALOR VENTA ({{ setting.currencyAcronym }})</label>
+                              </div>
+
+                              <div class="col-6">
+                                <input formControlName="saleValue"
+                                  [value]="model.get('saleValue')?.value | number: '1.2-2'" type="text"
+                                  class="form-control form-control-sm fw-bold bg-white text-end" readonly>
+                              </div>
+
+                            </div>
+
+                          </div>
+
+                          <div class="col-4">
+
+                            <div class="row">
+
+                              <div class="col-6 text-end">
+                                <label class="fw-bold" for="saleTax" style="font-size:.56rem">IMPUESTO ({{ setting.currencyAcronym }})</label>
+                              </div>
+
+                              <div class="col-6">
+                                <input formControlName="saleTax"
+                                  [value]="model.get('saleTax')?.value | number: '1.2-2'" type="text"
+                                  class="form-control form-control-sm fw-bold bg-white text-end" readonly>
+                              </div>
+
+                            </div>
+                          </div>
+
+                          <div class="col-4">
+
+                            <div class="row">
+
+                              <div class="col-6 text-end">
+                                <label class="fw-bold" for="salePrice" style="font-size:.56rem">PRECIO VENTA ({{ setting.currencyAcronym }})</label>
+                              </div>
+
+                              <div class="col-6">
+                                <input formControlName="salePrice"
+                                  [value]="model.get('salePrice')?.value | number: '1.2-2'" type="text"
+                                  class="form-control form-control-sm fw-bold bg-white text-end" readonly>
+                              </div>
+
+                            </div>
+
+                          </div>
+
+
+                        </div>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+  </div>
+
+}
+
+

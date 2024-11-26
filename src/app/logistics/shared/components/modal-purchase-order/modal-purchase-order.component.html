@@ -1,0 +1,108 @@
+<ngx-spinner [name]="spinnerName" bdColor="rgba(0, 0, 0, 0.8)" size="medium" color="#fff" type="square-jelly-box"
+  [fullScreen]="false">
+  <p style="color: white"> Cargando... </p>
+</ngx-spinner>
+
+<div class="modal-header">
+  <div class="modal-title"><i class="fa-brands fa-artstation"></i> BUSQUEDA DE ORDENES DE COMPRA</div>
+  <button type="button" (click)="cancel()" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+
+<div class="modal-body">
+
+  <div [formGroup]="paged">
+
+    <div formArrayName="lstFilter" class="row">
+
+      <div [formGroupName]="0" class="col-2">
+        <label for="filterId">N° ORDEN</label>
+        <input formControlName="value" id="filterId" #filterId type="text" class="form-control form-control-sm text-uppercase"
+          autocomplete="off" maxlength="10" (keyup.enter)="search()" (keypress)="onKeyPressAlfaNumerico($event)"
+          [ngClass]="{'is-invalid': paged.get('lstFilter')?.get('0')?.get('value')?.errors}" />
+
+          @if (paged.get('lstFilter')?.get('0')?.get('value')?.hasError('pattern')) {
+            <div class="invalid-feedback">Ingrese solo caracteres validos</div>
+          }
+      </div>
+
+      <div [formGroupName]="1" hidden><input formControlName="value" type="text"/></div>
+      <div class="col-7">
+        <label for="filterSupplier">PROVEEDOR</label>
+        <div class="input-group">
+          <input  [(ngModel)]="setting.filterSupplier" [ngModelOptions]="{standalone: true}" id="filterSupplier" type="text" class="form-control form-control-sm" readonly />
+          <button (click)="searchSupplier()" type="button" class="btn btn-default btn-custom"><i class="fas fa-search"></i></button>
+          <button (click)="cleanSupplier()" type="button" class="btn btn-default btn-custom" title="Limpiar filtro"><i class="fas fa-times"></i></button>
+        </div>
+      </div>
+
+      <div class="col-2">
+        <button (click)="search()" type="button" class="btn btn-default btn-sm" style="margin-top: 1.3rem;"><i class="fas fa-search"></i> Buscar</button>
+      </div>
+
+    </div>
+
+    <hr>
+    <div class="container-tabla" tabindex="0">
+
+      <div class="overflow-auto" [style.height.px]="table.hight">
+        <table class="table table-bordered table-hover">
+          <thead>
+            <tr>
+              @for (item of table.lstColumn; track $index) {
+                <th [width]="item.width" [ngClass]="item.style">{{item.name}}</th>
+              }
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of table.content; track item.id; let i = $index) {
+              <tr [ngClass]="{'bg-seleccion' : setting.recordId == item.id}" (click)="selectRecord(item)" (dblclick)="confirm()">
+                <td class="td-table" [ngClass]="table.lstColumn[0].style"> {{ i + 1 + (table.pageSize * (table.pageNumber - 1)) }}
+                </td>
+                <td class="td-table" [ngClass]="table.lstColumn[1].style"> {{ ("00000" + item.id).slice(-5) }} </td>
+                <td class="td-table" [ngClass]="table.lstColumn[2].style"> {{ item.proofPaymentType.name }}</td>
+                <td class="td-table" [ngClass]="table.lstColumn[3].style"> {{ item.supplier.ruc + ' - ' + item.supplier.reasonSocial }} </td>
+                <td class="td-table" [ngClass]="table.lstColumn[4].style"> {{ item.paymentMethod.name }} </td>
+                <td class="td-table" [ngClass]="table.lstColumn[5].style"> {{ item.purchaseDate }} </td>
+                <td class="td-table" [ngClass]="table.lstColumn[6].style"> {{ item.currency.shortName }} </td>
+                <td class="td-table" [ngClass]="table.lstColumn[7].style"> {{ item.saleValue | number: '1.2-2' }} </td>
+                <td class="td-table" [ngClass]="table.lstColumn[8].style"> {{ item.saleTax | number: '1.2-2' }} </td>
+                <td class="td-table" [ngClass]="table.lstColumn[9].style"> {{ item.salePrice | number: '1.2-2' }} </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <div class="panel-paginado">
+        <div class="row">
+
+          <div class="col-5">
+            <label>
+              <i class="far fa-clone"></i>&nbsp; Mostrando {{ table.startElement }} al {{ table.endElement }} de {{ table.totalElements }} registros
+            </label>
+          </div>
+
+          <div class="col-7">
+            <ul class="pagination justify-content-end">
+              @for (item of table.lstPageNumber; track $index) {
+                <li class={{item.style}}>
+                  <a (click)="paginationManager(item, table)" class="page-link">{{item.value}}</a>
+                </li>
+              }
+            </ul>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<div class="modal-footer">
+  <button (click)="confirm()" [disabled]="setting.recordId == 0" type="button"
+    class="btn btn-sm btn-outline-primary">Confirmar</button>
+  <button (click)="cancel()" type="button" class="btn btn-sm btn-link">Cancelar</button>
+</div>

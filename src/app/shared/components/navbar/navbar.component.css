@@ -1,0 +1,102 @@
+/* .navbar-principal {
+  background: #c00000 !important;
+  border-bottom: 0.1px solid #000000;
+  border-bottom: .01rem solid #496293;
+  height: 2.8rem;
+}
+
+.navbar-secundary {
+  background: #c00000 !important;
+  border-top: 0.1px solid #ED3833;
+  border-bottom: 0.1px solid #000000;
+  height: 2.4rem;
+  font-size: .7rem;
+} */
+
+.navbar-principal {
+  background: #43567b;
+  background: -moz-linear-gradient(top, #43567b 0%, #273d6e 2%, #1a3269 3%, #21386f 10%, #334d81 25%, #6684b7 62%, #7998ca 80%, #8eacda 92%, #a8c0e6 100%);
+  background: -webkit-linear-gradient(top, #43567b 0%, #273d6e 2%, #1a3269 3%, #21386f 10%, #334d81 25%, #6684b7 62%, #7998ca 80%, #8eacda 92%, #a8c0e6 100%);
+  background: linear-gradient(to bottom, #43567b 0%, #273d6e 2%, #1a3269 3%, #21386f 10%, #334d81 25%, #6684b7 62%, #7998ca 80%, #8eacda 92%, #a8c0e6 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#43567b', endColorstr='#a8c0e6', GradientType=0);
+  border-bottom: .01rem solid #496293;
+}
+
+.navbar-secundary {
+  background: #5e6e93;
+  background: -moz-linear-gradient(top, #5e6e93 0%, #6b7da2 52%, #3b5485 56%, #4a6394 84%, #617cad 100%);
+  background: -webkit-linear-gradient(top, #5e6e93 0%, #6b7da2 52%, #3b5485 56%, #4a6394 84%, #617cad 100%);
+  background: linear-gradient(to bottom, #5e6e93 0%, #6b7da2 52%, #3b5485 56%, #4a6394 84%, #617cad 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#5e6e93', endColorstr='#617cad', GradientType=0);
+  border-top: .05rem solid white;
+  border-bottom: .05rem solid #000000;
+  font-size: .7rem;
+  height: 2.6rem;
+}
+
+/* Cambiar el brand y el color de texto */
+.navbar-secundary .navbar-brand,
+.navbar-secundary .navbar-text {
+  color: rgba(255, 255, 255, .8);
+}
+
+/* Cambia el color del link */
+.navbar-secundary .navbar-nav .nav-link {
+  background: #d4dbe5;
+  background: -moz-linear-gradient(top, #d4dbe5 0%, #c6cfdd 4%, #bdc7d7 8%, #b7c3d3 13%, #acb7cc 33%, #9da9c2 50%, #3b5485 54%, #3b5587 63%, #405a8d 71%, #4c679b 83%, #617caf 100%);
+  background: -webkit-linear-gradient(top, #d4dbe5 0%, #c6cfdd 4%, #bdc7d7 8%, #b7c3d3 13%, #acb7cc 33%, #9da9c2 50%, #3b5485 54%, #3b5587 63%, #405a8d 71%, #4c679b 83%, #617caf 100%);
+  background: linear-gradient(to bottom, #d4dbe5 0%, #c6cfdd 4%, #bdc7d7 8%, #b7c3d3 13%, #acb7cc 33%, #9da9c2 50%, #3b5485 54%, #3b5587 63%, #405a8d 71%, #4c679b 83%, #617caf 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#d4dbe5', endColorstr='#617caf', GradientType=0);
+  color: #ffffff;
+  margin-right: 2px;
+
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-top: 6px;
+  padding-bottom: 6px;
+
+  border-top: 1px solid #38486E;
+  border-right: 1px solid #607EB1;
+  border-left: 1px solid #9CA8C5;
+  border-radius: 2px 2px 0px 0px;
+}
+
+/* Cambia el color de los links activos o desplazados */
+.navbar-secundary .nav-item.active .nav-link,
+.navbar-secundary .nav-item:hover .nav-link {
+  background: #fecc60;
+  background: -moz-linear-gradient(top, #fecc60 0%, #febe34 4%, #feb516 8%, #feb008 13%, #feac09 38%, #fea00a 50%, #b92b0e 54%, #bc310e 63%, #c23d0d 71%, #e88508 100%);
+  background: -webkit-linear-gradient(top, #fecc60 0%, #febe34 4%, #feb516 8%, #feb008 13%, #feac09 38%, #fea00a 50%, #b92b0e 54%, #bc310e 63%, #c23d0d 71%, #e88508 100%);
+  background: linear-gradient(to bottom, #fecc60 0%, #febe34 4%, #feb516 8%, #feb008 13%, #feac09 38%, #fea00a 50%, #b92b0e 54%, #bc310e 63%, #c23d0d 71%, #e88508 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fecc60', endColorstr='#e88508', GradientType=0);
+  color: #ffffff;
+}
+
+/* Solo para el dropdown - cambia el color del dropdown */
+.navbar-secundary .dropdown-menu {
+  background-color: #4F6B9E;
+}
+
+.navbar-secundary .dropdown-item {
+  color: #ffffff;
+  font-size: 0.7rem;
+}
+
+.navbar-secundary .dropdown-item:hover,
+.navbar-secundary .dropdown-item:focus {
+  color: #333333;
+  background-color: rgba(255, 255, 255, .5);
+}
+
+/* Asigna el color al dropdown seleccionado en el menu */
+.dropdown-item.active {
+  background: #fea00a;
+}
+
+@media screen and (min-width:900px) {
+  .mega-menu {
+    width: 900px;
+    transform: translate3d(0px, 4px, 0);
+    margin-top: 2px;
+  }
+}
