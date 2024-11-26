@@ -3,8 +3,9 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "npx serve -s dist/web/browser",
+    "start": "ng serve -o",
     "build": "ng build",
+    "build:github": "rmdir docs && ng build --base-href ./ && mkdir doc && copyfiles dist/bases/* ./docs -f",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
@@ -38,6 +39,8 @@
     "@angular/compiler-cli": "^17.0.0",
     "@types/file-saver": "^2.0.7",
     "@types/jasmine": "~5.1.0",
+    "copyfiles": "^2.4.1",
+    "del-cli": "^6.0.0",
     "jasmine-core": "~5.1.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",
