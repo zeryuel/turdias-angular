@@ -54,7 +54,6 @@
                   <td class="td-table" [ngClass]="table.lstColumn[0].style"> {{ i + 1 + (table.pageSize * (table.pageNumber - 1)) }} </td>
                   <td class="td-table" [ngClass]="table.lstColumn[1].style"> {{ ("000" + item.id).slice(-3) }} </td>
                   <td class="td-table" [ngClass]="table.lstColumn[2].style"> {{ item.name }} </td>
-                  <td class="td-table" [ngClass]="table.lstColumn[3].style"> {{ item.active == 1 ? 'ACTIVO' : 'INACTIVO' }} </td>
                 </tr>
               }
             </tbody>
@@ -165,14 +164,6 @@
                   [ngClass]="{'is-invalid': model.get('password')?.errors && model.get('password')?.touched}">
 
                 @if(model.get('password')?.hasError('required')){<div class="invalid-feedback">Campo requerido</div>}
-              </div>
-
-              <div class="col-1">
-                <label for="active">ESTADO</label>
-                <select formControlName="active" id="active" class="form-select">
-                  <option [value]=1>ACTIVO</option>
-                  <option [value]=0>INACTIVO</option>
-                </select>
               </div>
 
             </div>

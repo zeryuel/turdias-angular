@@ -9,7 +9,6 @@ export interface Resource {
   icon: string;
   position: number;
   isParent: number;
-  active: number;
 
   checked: boolean;
 

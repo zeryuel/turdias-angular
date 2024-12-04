@@ -275,3 +275,40 @@ label .form-check-input {
 }
 /*************************** Estilos de arbol de recursos **********************/
 
+
+
+/********************* Tree View ***********************/
+.css-treeview input[type=checkbox] {
+  visibility: hidden;
+  position: absolute;
+}
+
+.css-treeview input[type=checkbox]::after {
+  visibility: visible;
+  content: "\f105";
+  font-family: FontAwesome;
+  font-size: 0.8rem;
+}
+
+.css-treeview input[type=checkbox]:checked::after {
+  content: "\f107";
+  font-family: FontAwesome;
+}
+
+.css-treeview li div:hover {
+  background-color: #F3F3F3;
+}
+
+.css-treeview label:hover {
+  cursor: pointer;
+}
+
+.css-treeview ul {
+  list-style-type: none;
+}
+
+.seleccionado {
+  background-color: #f7d7a0;
+  border-radius: .3rem;
+}
+/********************* Tree View ***********************/

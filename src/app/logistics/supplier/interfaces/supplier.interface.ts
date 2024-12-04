@@ -8,7 +8,6 @@ export interface Supplier {
   phoneNumber: string;
   email: string;
   contact: string;
-  active: number;
 
   economicActivity: EconomicActivity;
 }

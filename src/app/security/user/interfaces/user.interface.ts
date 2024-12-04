@@ -5,7 +5,6 @@ export interface User {
   name: string;
   login: string;
   password: string;
-  active: number;
   token: string;
 
   lstUserApplication: UserApplication[];

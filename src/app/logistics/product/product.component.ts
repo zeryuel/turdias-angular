@@ -13,11 +13,12 @@ import { Product } from './interfaces/product.interface';
 import { SettingProduct } from './interfaces/setting-product.interface';
 import { ManageBrandComponent } from './components/manage-brand/manage-brand.component';
 import { ManageUnitMeasureComponent } from './components/manage-unit-measure/manage-unit-measure.component';
+import { TreeNodeComponent } from "./components/tree-node/tree-node.component";
 
 @Component({
   selector: 'app-product',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, NgxSpinnerModule],
+  imports: [CommonModule, ReactiveFormsModule, NgxSpinnerModule, TreeNodeComponent],
   templateUrl: './product.component.html'
 })
 export class ProductComponent {
@@ -39,7 +40,6 @@ export class ProductComponent {
       id: '',
       name: ['', Validators.required],
       alternativeCode: '',
-      active: 1,
       category: this.formBuilder.group({ id: 1 }),
       brand: this.formBuilder.group({ id: ['', Validators.required] }),
       unitMeasure: this.formBuilder.group({ id: ['', Validators.required] })
@@ -55,8 +55,7 @@ export class ProductComponent {
           this.formBuilder.group({ object: 'product', column: 'id', value: '', operator: 'equal' }),
           this.formBuilder.group({ object: 'product', column: 'name', value: '', operator: 'like' }),
           this.formBuilder.group({ object: 'product', column: 'alternative_code', value: '', operator: 'like' }),
-          this.formBuilder.group({ object: 'unitMeasure', column: 'id', value: '', operator: 'equal' }),
-          this.formBuilder.group({ object: 'product', column: 'active', value: '', operator: 'equal' })
+          this.formBuilder.group({ object: 'unitMeasure', column: 'id', value: '', operator: 'equal' })
         ]
       )
     })
@@ -83,11 +82,10 @@ export class ProductComponent {
       lstColumn: [
         { name: 'N°', width: '5%', style: 'text-center' },
         { name: 'CODIGO', width: '10%', style: 'text-center' },
-        { name: 'NOMBRE', width: '35%', style: 'text-left' },
-        { name: 'COD. ALTENATIVO', width: '10%', style: 'text-left' },
-        { name: 'MARCA', width: '15%', style: 'text-left' },
-        { name: 'UND. MEDIDA', width: '15%', style: 'text-left' },
-        { name: 'ESTADO', width: '10%', style: 'text-center' }
+        { name: 'NOMBRE', width: '46%', style: 'text-left' },
+        { name: 'COD. ALTENATIVO', width: '15%', style: 'text-left' },
+        { name: 'MARCA', width: '12%', style: 'text-left' },
+        { name: 'UND. MEDIDA', width: '12%', style: 'text-left' }
       ],
       lstPageSize: [
         { id: 10, name: '10' },
@@ -269,7 +267,6 @@ export class ProductComponent {
       id: '',
       name: '',
       alternativeCode: '',
-      active: 1,
       category: { id: 1 },
       brand: { id: '' },
       unitMeasure:{ id: '' }

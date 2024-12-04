@@ -6,7 +6,6 @@ export interface Product {
   id: number;
   name: string;
   alternativeCode: string;
-  active: number;
 
   category: Category;
   brand: Brand;

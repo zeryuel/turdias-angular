@@ -5,7 +5,6 @@ import { RoleResource } from "./role-resource.innterface";
 export interface Role {
   id: number;
   name: string;
-  active: number;
 
   application: Application;
   lstRoleResource: RoleResource[];

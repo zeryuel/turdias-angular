@@ -41,7 +41,6 @@ export class SupplierComponent {
       phoneNumber: '',
       email: '',
       contact: '',
-      active: 1,
       economicActivity: this.formBuilder.group({
         id: ['', Validators.required],
         name : ''
@@ -57,8 +56,7 @@ export class SupplierComponent {
         [
           this.formBuilder.group({ object: 'supplier', column: 'ruc', value: '', operator: 'like' }),
           this.formBuilder.group({ object: 'supplier', column: 'reason_social', value: '', operator: 'like' }),
-          this.formBuilder.group({ object: 'supplierActivity', column: 'id', value: '', operator: 'equal' }),
-          this.formBuilder.group({ object: 'supplier', column: 'active', value: '', operator: 'equal' })
+          this.formBuilder.group({ object: 'supplierActivity', column: 'id', value: '', operator: 'equal' })
         ]
       )
     })
@@ -85,10 +83,9 @@ export class SupplierComponent {
         { name: 'N°', width: '5%', style: 'text-center' },
         { name: 'CODIGO', width: '0%', style: 'd-none' },
         { name: 'RUC', width: '10%', style: 'text-left' },
-        { name: 'RAZON SOCIAL', width: '45%', style: 'text-left' },
+        { name: 'RAZON SOCIAL', width: '55%', style: 'text-left' },
         { name: 'TELEFONO', width: '10%', style: 'text-left' },
-        { name: 'ACT. ECONOMICA', width: '20%', style: 'text-left' },
-        { name: 'ESTADO', width: '10%', style: 'text-center' }
+        { name: 'ACT. ECONOMICA', width: '20%', style: 'text-left' }
       ],
       lstPageSize: [
         { id: 10, name: '10' },
@@ -258,7 +255,6 @@ export class SupplierComponent {
       phoneNumber: '',
       email: '',
       contact: '',
-      active: 1,
       economicActivity: {
         id: '',
         name : ''

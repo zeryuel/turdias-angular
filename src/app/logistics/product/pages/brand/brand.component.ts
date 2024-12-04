@@ -35,8 +35,7 @@ export class BrandComponent {
   ) {
     this.model = this.formBuilder.group({
       id: '',
-      name: ['', Validators.required],
-      active: 1
+      name: ['', Validators.required]
     })
 
     this.paged = this.formBuilder.group({
@@ -46,8 +45,7 @@ export class BrandComponent {
       order: 'ASC',
       lstFilter: this.formBuilder.array(
         [
-          this.formBuilder.group({ object: '', column: 'name', value: '', operator: 'like' }),
-          this.formBuilder.group({ object: '', column: 'active', value: 1, operator: 'equal' })
+          this.formBuilder.group({ object: '', column: 'name', value: '', operator: 'like' })
         ]
       )
     })
@@ -72,8 +70,7 @@ export class BrandComponent {
       lstColumn: [
         { name: 'N°', width: '5%', style: 'text-center' },
         { name: 'CODIGO', width: '10%', style: 'text-center' },
-        { name: 'NOMBRE', width: '75%', style: 'text-left' },
-        { name: 'ESTADO', width: '10%', style: 'text-center' }
+        { name: 'NOMBRE', width: '85%', style: 'text-left' }
       ],
       lstPageSize: [
         { id: 10, name: '10' },
@@ -231,8 +228,7 @@ export class BrandComponent {
   public exit(updatedRecord?: boolean) {
     this.model.reset({
       id: '',
-      name: '',
-      active: 1
+      name: ''
     });
 
     this.setting.mainScreen = false;

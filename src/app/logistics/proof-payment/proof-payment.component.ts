@@ -439,10 +439,9 @@ export class ProofPaymentComponent {
                     id: item.product.id,
                     name: item.product.name,
                     alternativeCode: item.product.alternativeCode,
-                    active: 0,
-                    brand: { id: 0, name: '', active: 1 },
-                    unitMeasure: { id: 0, name: item.product.unitMeasure.name, sunatCode: '', active: 0 },
-                    category: { id: 0, idParent: 0, name: '', path: '', isParent: 0, active: 0, lstCategory: [] }
+                    brand: { id: 0, name: '' },
+                    unitMeasure: { id: 0, name: item.product.unitMeasure.name, sunatCode: '' },
+                    category: { id: 0, idParent: 0, name: '', path: '', isParent: 0, lstCategory: [] }
                   }
                 };
                 array.push(object);

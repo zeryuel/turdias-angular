@@ -37,7 +37,6 @@ export class RoleComponent {
     this.model = this.formBuilder.group({
       id: '',
       name: ['', Validators.required],
-      active: 1,
       application: this.formBuilder.group({ id: ['', Validators.required] }),
       lstRoleResource:  Array<RoleResource>
     });
@@ -51,7 +50,7 @@ export class RoleComponent {
         [
           this.formBuilder.group({ object: 'role', column: 'name', value: ['', Validators.pattern(/^[a-zA-Z0-9 ]+$/)], operator: 'like' }),
           this.formBuilder.group({ object: 'application', column: 'id', value: '', operator: 'equal' }),
-          this.formBuilder.group({ object: 'role', column: 'active', value: 1, operator: 'equal' })
+          this.formBuilder.group({ object: 'role', column: 'active', value: true, operator: 'equal' })
         ]
       )
     });
@@ -79,9 +78,8 @@ export class RoleComponent {
       lstColumn: [
         { name: 'N°', width: '5%', style: 'text-center' },
         { name: 'CODIGO', width: '10%', style: 'text-center' },
-        { name: 'NOMBRE', width: '55%', style: 'text-left' },
-        { name: 'SISTEMA', width: '20%', style: 'text-left' },
-        { name: 'ESTADO', width: '10%', style: 'text-center' },
+        { name: 'NOMBRE', width: '65%', style: 'text-left' },
+        { name: 'SISTEMA', width: '20%', style: 'text-left' }
       ],
       lstPageSize: [
         { id: 10, name: '10' },
@@ -275,7 +273,6 @@ export class RoleComponent {
     this.model.reset({
       id: '',
       name: '',
-      active: 1,
       application: { id: '' }
     });
     this.model.get('lstRoleResource')?.setValue([]);

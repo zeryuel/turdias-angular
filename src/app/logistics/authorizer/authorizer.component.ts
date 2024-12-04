@@ -40,7 +40,6 @@ export class AuthorizerComponent {
       idUser: ['', Validators.required],
       name: ['', Validators.required],
       maximumValue: ['', Validators.required],
-      active: 1,
       userName: ''
     })
 
@@ -51,8 +50,7 @@ export class AuthorizerComponent {
       order: 'ASC',
       lstFilter: this.formBuilder.array(
         [
-          this.formBuilder.group({ object: 'authorizer', column: 'name', value: '', operator: 'like' }),
-          this.formBuilder.group({ object: 'authorizer', column: 'active', value: '', operator: 'equal' })
+          this.formBuilder.group({ object: 'authorizer', column: 'name', value: '', operator: 'like' })
         ]
       )
     })
@@ -77,9 +75,8 @@ export class AuthorizerComponent {
       lstColumn: [
         { name: 'N°', width: '5%', style: 'text-center' },
         { name: 'CODIGO', width: '7%', style: 'd-none' },
-        { name: 'NOMBRE', width: '57%', style: 'text-left' },
-        { name: 'MONTO MAXIMO', width: '20%', style: 'text-left' },
-        { name: 'ESTADO', width: '10%', style: 'text-center' }
+        { name: 'NOMBRE', width: '67%', style: 'text-left' },
+        { name: 'MONTO MAXIMO', width: '20%', style: 'text-left' }
       ],
       lstPageSize: [
         { id: 10, name: '10' },
@@ -255,7 +252,6 @@ export class AuthorizerComponent {
       id: '',
       name: '',
       maximumValue: '',
-      active: 1,
       user: this.formBuilder.group({ id: '', name : '' })
     })
 

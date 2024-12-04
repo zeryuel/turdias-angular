@@ -40,15 +40,6 @@
           </select>
         </div>
 
-        <div [formGroupName]="3" class="col-1">
-          <label for="filterState">ESTADO</label>
-          <select formControlName="value" id="filterState" (change)="search()" class="form-select" tabindex="2">
-            <option value="">[TODOS]</option>
-            <option value=1>ACTIVO</option>
-            <option value=0>INACTIVO</option>
-          </select>
-        </div>
-
       </div>
 
       <hr>
@@ -80,8 +71,6 @@
                   <td class="td-table" [ngClass]="table.lstColumn[3].style"> {{ item.reasonSocial }} </td>
                   <td class="td-table" [ngClass]="table.lstColumn[4].style"> {{ item.phoneNumber }} </td>
                   <td class="td-table" [ngClass]="table.lstColumn[5].style"> {{ item.economicActivity.name }} </td>
-                  <td class="td-table" [ngClass]="table.lstColumn[6].style"> {{ item.active == 1 ? 'ACTIVO' : 'INACTIVO' }}
-                  </td>
                 </tr>
               }
             </tbody>
@@ -176,7 +165,11 @@
                   }
               </div>
 
-              <div class="col-5">
+            </div>
+
+            <div class="row mt-2">
+
+              <div class="col-4">
                 <label for="reasonSocial">RAZON SOCIAL</label>
                 <input formControlName="reasonSocial" id="reasonSocial" type="text" class="form-control form-control-sm text-uppercase" maxlength="100"
                   [ngClass]="{'is-invalid': model.get('reasonSocial')?.errors && model.get('reasonSocial')?.touched}">
@@ -190,7 +183,7 @@
 
             <div class="row mt-2">
 
-              <div class="col-3" formGroupName="economicActivity">
+              <div class="col-2" formGroupName="economicActivity">
                 <label for="economicActivityId">ACTIVIDAD ECONOMICA</label>
                 <select formControlName="id" id="economicActivityId" class="form-select"
                   [ngClass]="{ 'is-invalid': model.get('economicActivity')?.get('id')?.errors && model.get('economicActivity')?.get('id')?.touched }">
@@ -210,10 +203,32 @@
 
             <div class="row mt-2">
 
-              <div class="col-4">
+              <div class="col-6">
                 <label for="address">DIRECCION</label>
                 <input formControlName="address" id="address" type="text" class="form-control form-control-sm text-uppercase">
               </div>
+
+            </div>
+
+            <div class="row mt-2">
+
+              <div class="col-4">
+                <label for="email">CORREO ELECTRONICO</label>
+                <input formControlName="email" id="email" type="text" class="form-control form-control-sm text-uppercase">
+              </div>
+
+            </div>
+
+            <div class="row mt-2">
+
+              <div class="col-4">
+                <label for="contact">CONTACTO</label>
+                <input formControlName="contact" id="contact" type="text" class="form-control form-control-sm text-uppercase">
+              </div>
+
+            </div>
+
+            <div class="row mt-2">
 
               <div class="col-2">
                 <label for="phoneNumber">TELEFONO(S)</label>
@@ -222,31 +237,6 @@
 
             </div>
 
-            <div class="row mt-2">
-
-              <div class="col-3">
-                <label for="email">CORREO ELECTRONICO</label>
-                <input formControlName="email" id="email" type="text" class="form-control form-control-sm text-uppercase">
-              </div>
-
-              <div class="col-3">
-                <label for="contact">CONTACTO</label>
-                <input formControlName="contact" id="contact" type="text" class="form-control form-control-sm text-uppercase">
-              </div>
-
-            </div>
-
-
-
-            <div class="row mt-2">
-              <div class="col-1">
-                <label for="activo">ESTADO</label>
-                <select formControlName="active" id="active" class="form-select">
-                  <option [value]=1>ACTIVO</option>
-                  <option [value]=0>INACTIVO</option>
-                </select>
-              </div>
-            </div>
           </div>
 
         </div>

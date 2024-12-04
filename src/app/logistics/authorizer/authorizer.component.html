@@ -19,15 +19,6 @@
             }
         </div>
 
-        <div [formGroupName]="1" class="col-1">
-          <label for="filterState">ESTADO</label>
-          <select formControlName="value" id="filterState" (change)="search()" class="form-select" tabindex="2">
-            <option value="">[TODOS]</option>
-            <option value=1>ACTIVO</option>
-            <option value=0>INACTIVO</option>
-          </select>
-        </div>
-
       </div>
 
       <hr>
@@ -57,8 +48,6 @@
                   <td class="td-table" [ngClass]="table.lstColumn[1].style"> {{ item.id | number:'3.0' }} </td>
                   <td class="td-table" [ngClass]="table.lstColumn[2].style"> {{ item.name }} </td>
                   <td class="td-table" [ngClass]="table.lstColumn[3].style"> {{ item.maximumValue }} </td>
-                  <td class="td-table" [ngClass]="table.lstColumn[4].style"> {{ item.active == 1 ? 'ACTIVO' : 'INACTIVO' }}
-                  </td>
                 </tr>
               }
             </tbody>
@@ -167,6 +156,10 @@
                   @if(model.get('name')?.hasError('required')){<div class="invalid-feedback">Campo requerido</div>}
               </div>
 
+            </div>
+
+            <div class="row mt-2">
+
               <div class="col-1">
                 <label for="maximumValue">MONTO MAXIMO</label>
                 <input formControlName="maximumValue" id="maximumValue" type="text" class="form-control form-control-sm text-uppercase" maxlength="50"
@@ -177,15 +170,6 @@
 
             </div>
 
-            <div class="row mt-2">
-              <div class="col-1">
-                <label for="activo">ESTADO</label>
-                <select formControlName="active" id="active" class="form-select">
-                  <option [value]=1>ACTIVO</option>
-                  <option [value]=0>INACTIVO</option>
-                </select>
-              </div>
-            </div>
           </div>
 
         </div>

@@ -161,10 +161,9 @@ export class DepartureOrderDetailComponent {
           id: parseInt(this.model.get('item')?.get('id')?.value),
           name: this.model.get('item')?.get('name')?.value,
           alternativeCode: this.model.get('item')?.get('alternativeCode')?.value,
-          active: 0,
-          brand: { id: 0, name: this.model.get('item')?.get('itemBrand')?.get('name')?.value, active: 1 },
-          unitMeasure: { id: 0, name: this.model.get('item')?.get('itemUnitMeasure')?.get('name')?.value, sunatCode: '', active: 0 },
-          category: { id: 0, idParent: 0, name: '', path: '', isParent: 0, active: 0, lstCategory: [] }
+          brand: { id: 0, name: this.model.get('item')?.get('itemBrand')?.get('name')?.value },
+          unitMeasure: { id: 0, name: this.model.get('item')?.get('itemUnitMeasure')?.get('name')?.value, sunatCode: ''},
+          category: { id: 0, idParent: 0, name: '', path: '', isParent: 0, lstCategory: [] }
         },
 
       };

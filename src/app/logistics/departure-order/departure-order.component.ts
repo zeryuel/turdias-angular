@@ -658,7 +658,6 @@ export class DepartureOrderComponent {
         id: this.model.get('originCostCenter')?.get('id')?.value,
         idDocument: 0,
         name: this.model.get('originCostCenter')?.get('name')?.value,
-        active: 0,
         costCenterType: { id: 0, name: '', active: 0 }
       };
 
@@ -694,7 +693,6 @@ export class DepartureOrderComponent {
       id: this.model.get('originCostCenter')?.get('id')?.value,
       idDocument: 0,
       name: this.model.get('originCostCenter')?.get('name')?.value,
-      active: 0,
       costCenterType: { id: 0, name: '', active: 0 }
     };
 

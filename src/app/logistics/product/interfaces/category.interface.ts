@@ -4,7 +4,6 @@ export interface Category {
   name: string;
   path: string;
   isParent: number;
-  active: number;
 
   lstCategory: Category[];
 }

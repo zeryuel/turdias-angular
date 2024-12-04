@@ -37,7 +37,6 @@ export class CostCenterComponent {
       id: '',
       idDocument: 0,
       name: ['', Validators.required],
-      active: 1,
       costCenterType: this.formBuilder.group({
         id: ['', Validators.required],
         name : ''
@@ -52,8 +51,7 @@ export class CostCenterComponent {
       lstFilter: this.formBuilder.array(
         [
           this.formBuilder.group({ object: 'costCenter', column: 'name', value: '', operator: 'like' }),
-          this.formBuilder.group({ object: 'costCenterType', column: 'id', value: '', operator: 'equal' }),
-          this.formBuilder.group({ object: 'costCenter', column: 'active', value: '', operator: 'equal' })
+          this.formBuilder.group({ object: 'costCenterType', column: 'id', value: '', operator: 'equal' })
         ]
       )
     })
@@ -79,9 +77,8 @@ export class CostCenterComponent {
       lstColumn: [
         { name: 'N°', width: '5%', style: 'text-center' },
         { name: 'CODIGO', width: '7%', style: 'text-center' },
-        { name: 'NOMBRE', width: '57%', style: 'text-left' },
-        { name: 'TIPO', width: '20%', style: 'text-left' },
-        { name: 'ESTADO', width: '10%', style: 'text-center' }
+        { name: 'NOMBRE', width: '67%', style: 'text-left' },
+        { name: 'TIPO', width: '20%', style: 'text-left' }
       ],
       lstPageSize: [
         { id: 10, name: '10' },
@@ -243,7 +240,6 @@ export class CostCenterComponent {
       id: '',
       idDocument: 0,
       name: '',
-      active: 1,
       costCenterType: {
         id: '',
         name : ''

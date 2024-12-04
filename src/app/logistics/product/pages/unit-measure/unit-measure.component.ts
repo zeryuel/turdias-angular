@@ -36,8 +36,7 @@ export class UnitMeasureComponent {
     this.model = this.formBuilder.group({
       id: '',
       sunatCode: ['', Validators.required],
-      name: ['', Validators.required],
-      active: 1
+      name: ['', Validators.required]
     })
 
     this.paged = this.formBuilder.group({
@@ -48,7 +47,7 @@ export class UnitMeasureComponent {
       lstFilter: this.formBuilder.array(
         [
           this.formBuilder.group({ object: '', column: 'name', value: '', operator: 'like' }),
-          this.formBuilder.group({ object: '', column: 'active', value: 1, operator: 'equal' })
+          this.formBuilder.group({ object: '', column: 'active', value: true, operator: 'equal' })
         ]
       )
     })
@@ -73,9 +72,8 @@ export class UnitMeasureComponent {
       lstColumn: [
         { name: 'N°', width: '5%', style: 'text-center' },
         { name: 'CODIGO', width: '10%', style: 'text-center' },
-        { name: 'NOMBRE', width: '60%', style: 'text-left' },
-        { name: 'CODIGO SUNAT', width: '15%', style: 'text-left' },
-        { name: 'ESTADO', width: '10%', style: 'text-center' }
+        { name: 'NOMBRE', width: '70%', style: 'text-left' },
+        { name: 'CODIGO SUNAT', width: '15%', style: 'text-left' }
       ],
       lstPageSize: [
         { id: 10, name: '10' },
@@ -234,8 +232,7 @@ export class UnitMeasureComponent {
   public exit(updatedRecord?: boolean) {
     this.model.reset({
       id: '',
-      name: '',
-      active: 1
+      name: ''
     });
 
     this.setting.mainScreen = false;

@@ -193,16 +193,14 @@ export class PurchaseOrderDetailComponent {
           id: parseInt(this.model.get('product')?.get('id')?.value),
           name: this.model.get('product')?.get('name')?.value,
           alternativeCode: this.model.get('product')?.get('alternativeCode')?.value,
-          active: 0,
-          brand: { id: 0, name: this.model.get('product')?.get('brand')?.get('name')?.value, active: 1 },
-          unitMeasure: { id: 0, name: this.model.get('product')?.get('unitMeasure')?.get('name')?.value, sunatCode: '', active: 0 },
-          category: { id: 0, idParent: 0, name: '', path: '', isParent: 0, active: 0, lstCategory: [] }
+          brand: { id: 0, name: this.model.get('product')?.get('brand')?.get('name')?.value },
+          unitMeasure: { id: 0, name: this.model.get('product')?.get('unitMeasure')?.get('name')?.value, sunatCode: '' },
+          category: { id: 0, idParent: 0, name: '', path: '', isParent: 0, lstCategory: [] }
         },
         costCenter: {
           id: parseInt(this.model.get('costCenter')?.get('id')?.value),
           idDocument: 0,
           name: this.model.get('costCenter')?.get('name')?.value,
-          active: 0,
           costCenterType: {
             id: 0,
             name: '',

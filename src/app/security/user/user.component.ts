@@ -43,7 +43,6 @@ export class UserComponent {
       name: ['', Validators.required],
       login: ['', Validators.required],
       password: ['', Validators.required],
-      active: 1,
       lstUserApplication: Array<UserApplication>,
     });
     this.model.get('lstUserApplication')?.setValue([]);
@@ -56,7 +55,7 @@ export class UserComponent {
       lstFilter: this.formBuilder.array(
         [
           this.formBuilder.group({ object: 'usr', column: 'name', value: ['', Validators.pattern(/^[a-zA-Z0-9 ]+$/)], operator: 'like' }),
-          this.formBuilder.group({ object: 'usr', column: 'active', value: 1, operator: 'equal' })
+          this.formBuilder.group({ object: 'usr', column: 'active', value: true, operator: 'equal' })
         ]
       )
     });
@@ -288,8 +287,7 @@ export class UserComponent {
       id: '',
       name: '',
       login: '',
-      password: '',
-      active: 1,
+      password: ''
     });
     this.model.get('lstUserApplication')?.setValue([]);
     this.model.get('lstUserRole')?.setValue([]);
