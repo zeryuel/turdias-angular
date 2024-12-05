@@ -447,7 +447,6 @@ export class ProofPaymentComponent {
                 array.push(object);
               });
 
-
               this.tableMapper(this.model.get('lstProofPaymentDetail')?.value, this.table2);
               this.spinner.hide();
             } else

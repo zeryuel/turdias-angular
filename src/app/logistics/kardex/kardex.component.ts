@@ -41,7 +41,7 @@ export class KardexComponent {
     this.lstKardex = [];
     this.model = this.formBuilder.group({
       costCenter: this.formBuilder.group({ id: ['', [Validators.required]], name: '' }),
-      item: this.formBuilder.group({ id: ['', [Validators.required]], name: '', unitMeasureName: '' }),
+      product: this.formBuilder.group({ id: ['', [Validators.required]], name: '', unitMeasureName: '' }),
       startDate: [moment().add(-30, 'days').format('DD/MM/YYYY'), Validators.required],
       endDate: [moment().format('DD/MM/YYYY'), Validators.required]
     });
@@ -80,7 +80,7 @@ export class KardexComponent {
   public search() {
     if (this.model.valid) {
       let idCostCenter: any = this.model.get('costCenter')?.get('id')?.value;
-      let idItem: any = this.model.get('item')?.get('id')?.value;
+      let idProduct: any = this.model.get('product')?.get('id')?.value;
       let startDate: any = this.model.get('startDate')?.value;
       let endDate: any = this.model.get('endDate')?.value;
 
@@ -89,7 +89,7 @@ export class KardexComponent {
 
       let lstParameter: Array<Parameter> = [
         { name: 'idCostCenter', value: idCostCenter },
-        { name: 'idItem', value: idItem },
+        { name: 'idProduct', value: idProduct },
         { name: 'startDate', value: startDate },
         { name: 'endDate', value: endDate }
       ];
@@ -113,18 +113,16 @@ export class KardexComponent {
     }
   }
 
-  public searchItem() {
-    let lstFilter: Filter[] =  [
-      { object: 'itemType', column: 'id', value: '1', operator: 'equal' }
-    ];
+  public searchProduct() {
+    let lstFilter: Filter[] =  [];
     let initialState = { lstFilter : lstFilter };
 
     this.bsModalRef = this.bsModalService.show(ModalProductComponent, { initialState, class: 'modal-xl-custom modal-dialog-centered', backdrop: 'static' })
     this.bsModalRef.content.response.subscribe((response: Product) => {
       if (response != null) {
-        this.model.get('item')?.get('id')?.setValue(this.pad(response.id, 3, 0));
-        this.model.get('item')?.get('name')?.setValue(response.name);
-        this.model.get('item')?.get('unitMeasureName')?.setValue(response.unitMeasure.name);
+        this.model.get('product')?.get('id')?.setValue(this.pad(response.id, 3, 0));
+        this.model.get('product')?.get('name')?.setValue(response.name);
+        this.model.get('product')?.get('unitMeasureName')?.setValue(response.unitMeasure.name);
       }
     });
   }
@@ -144,10 +142,10 @@ export class KardexComponent {
     });
   }
 
-  public cleanItem() {
-    this.model.get('item')?.get('id')?.setValue('');
-    this.model.get('item')?.get('name')?.setValue('');
-    this.model.get('item')?.get('unitMeasureName')?.setValue('');
+  public cleanProduct() {
+    this.model.get('product')?.get('id')?.setValue('');
+    this.model.get('product')?.get('name')?.setValue('');
+    this.model.get('product')?.get('unitMeasureName')?.setValue('');
   }
 
   public cleanCostCenter() {

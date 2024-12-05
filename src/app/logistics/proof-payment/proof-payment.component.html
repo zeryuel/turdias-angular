@@ -314,11 +314,11 @@
                       </thead>
                       <tbody>
                         @for (item of table2.content; track item.id; let i = $index) {
-                          <tr [ngClass]="{'bg-seleccion' : setting.recordId2 == item.item.id}" (click)="selectRecord2(item)">
+                          <tr [ngClass]="{'bg-seleccion' : setting.recordId2 == item.product.id}" (click)="selectRecord2(item)">
                             <td class="td-table" [ngClass]="table2.lstColumn[0].style"> {{ i + 1 + (table2.pageSize * (table2.pageNumber - 1)) }} </td>
-                            <td class="td-table" [ngClass]="table2.lstColumn[1].style">{{ item.item.id }}</td>
-                            <td class="td-table" [ngClass]="table2.lstColumn[2].style">{{ item.item.name | uppercase }}</td>
-                            <td class="td-table" [ngClass]="table2.lstColumn[3].style">{{ item.item.itemUnitMeasure.name }}</td>
+                            <td class="td-table" [ngClass]="table2.lstColumn[1].style">{{ ("0000" + item.product.id).slice(-4) }}</td>
+                            <td class="td-table" [ngClass]="table2.lstColumn[2].style">{{ item.product.name | uppercase }}</td>
+                            <td class="td-table" [ngClass]="table2.lstColumn[3].style">{{ item.product.unitMeasure.name }}</td>
                             <td class="td-table" [ngClass]="table2.lstColumn[4].style">{{ item.amount }}</td>
                             <td class="td-table" [ngClass]="table2.lstColumn[5].style">{{ item.unitValue | number: '1.2-2' }}</td>
                             <td class="td-table" [ngClass]="table2.lstColumn[6].style">{{ item.amount * item.unitValue | number: '1.2-2' }}</td>

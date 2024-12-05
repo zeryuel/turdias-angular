@@ -37,14 +37,14 @@ export class InventoryComponent {
     this.paged = this.formBuilder.group({
       pageSize: 10,
       pageNumber: 1,
-      orderColumn: 'item.name',
+      orderColumn: 'product.name',
       order: 'ASC',
       lstFilter: this.formBuilder.array(
         [
           this.formBuilder.group({ object: 'costCenter', column: 'id', value: ['', Validators.required], operator: 'equal' }),
-          this.formBuilder.group({ object: 'item', column: 'id', value: ['', [Validators.pattern(/^([0-9])*$/)]], operator: 'equal' }),
-          this.formBuilder.group({ object: 'item', column: 'alternative_code', value: '', operator: 'like' }),
-          this.formBuilder.group({ object: 'item', column: 'name', value: '', operator: 'like' })
+          this.formBuilder.group({ object: 'product', column: 'id', value: ['', [Validators.pattern(/^([0-9])*$/)]], operator: 'equal' }),
+          this.formBuilder.group({ object: 'product', column: 'alternative_code', value: '', operator: 'like' }),
+          this.formBuilder.group({ object: 'product', column: 'name', value: '', operator: 'like' })
         ]
       )
     })

@@ -15,29 +15,29 @@
 
           <button (click)="searchCostCenter()" type="button" class="btn btn-default btn-custom" #btnBuscarCentroCosto><i class="fas fa-search"></i></button>
           <button (click)="cleanCostCenter()" type="button" class="btn btn-default btn-custom" title="Limpiar filtro"><i class="fas fa-times"></i></button>
-          @if ("model.get('costCenter')?.get('id')?.hasError('required')") {<div class="invalid-feedback">Campo requerido </div>}
+          <!-- @if ("model.get('costCenter')?.get('id')?.hasError('required')") {<div class="invalid-feedback">Campo requerido </div>} -->
         </div>
       </div>
 
-      <div class="col-5" formGroupName="item">
-        <label for="itemId" class="col-2">CÓDIGO</label>
+      <div class="col-5" formGroupName="product">
+        <label for="productId" class="col-2">CÓDIGO</label>
         <label for="filtroExistenciaNombre" class="col-8">PRODUCTO</label>
         <label for="filtroMedidaNombre" class="col-2">UND. MEDIDA</label>
         <div class="input-group">
           <input formControlName="id" id="itemId" type="text" class="form-control form-control-sm" readonly
-            [ngClass]="{'is-invalid': model.get('item')?.get('id')?.errors && model.get('item')?.get('id')?.touched}" />
+            [ngClass]="{'is-invalid': model.get('product')?.get('id')?.errors && model.get('product')?.get('id')?.touched}" />
 
           <input formControlName="name" type="text" class="form-control form-control-sm bg-white w-50" readonly
-            [ngClass]="{'is-invalid': model.get('item')?.get('id')?.errors && model.get('item')?.get('id')?.touched}" />
+            [ngClass]="{'is-invalid': model.get('product')?.get('id')?.errors && model.get('product')?.get('id')?.touched}" />
 
           <input formControlName="unitMeasureName" id="filtroMedidaNombre" type="text" class="form-control form-control-sm bg-white" readonly
-            [ngClass]="{'is-invalid': model.get('item')?.get('id')?.errors && model.get('item')?.get('id')?.touched}" />
+            [ngClass]="{'is-invalid': model.get('product')?.get('id')?.errors && model.get('product')?.get('id')?.touched}" />
 
-          <button (click)="searchItem()" #btnBuscarExistencia type="button" class="btn btn-default btn-custom"><i class="fas fa-search"></i></button>
-          <button (click)="cleanItem()" type="button" class="btn btn-default btn-custom" title="Limpiar filtro"><i class="fas fa-times"></i></button>
+          <button (click)="searchProduct()" #btnBuscarExistencia type="button" class="btn btn-default btn-custom"><i class="fas fa-search"></i></button>
+          <button (click)="cleanProduct()" type="button" class="btn btn-default btn-custom" title="Limpiar filtro"><i class="fas fa-times"></i></button>
 
-          <div *ngIf="model.get('item')?.get('id')?.errors" class="invalid-feedback">
-            <div *ngIf="model.get('item')?.get('id')?.hasError('required')">Campos requeridos</div>
+          <div *ngIf="model.get('product')?.get('id')?.errors" class="invalid-feedback">
+            <div *ngIf="model.get('product')?.get('id')?.hasError('required')">Campos requeridos</div>
           </div>
         </div>
       </div>

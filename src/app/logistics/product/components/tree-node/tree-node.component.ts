@@ -24,9 +24,9 @@ declare var $: any
     </div>
 
     <ul>
-      <ng-template ngFor let-item [ngForOf]="lista">
-        <tree-node  id={{item.id}} nombre={{item.nombre}} esPadre={{item.es_padre}} cargado={{item.cargado}} expandido={{item.expandido}}> </tree-node>
-      </ng-template>
+      @for (item of lista; track item.id) {
+        <tree-node  id={{item.id}} nombre={{item.name}} esPadre={{item.is_parent}} cargado={{item.cargado}} expandido={{item.expandido}}> </tree-node>
+      }
     </ul>
 
   </li>
@@ -51,8 +51,7 @@ export class TreeNodeComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    console.log(this.esPadre)
-    if(this.esPadre == '1')
+    if (this.esPadre == '1')
       this.nodoPadre = true
     else
       this.nodoPadre = false
@@ -75,7 +74,7 @@ export class TreeNodeComponent implements OnInit {
 
     if ( this.cargado == '1' ) return
 
-    let objeto: any = { id_categoria_padre : this.id}
+    let objeto: any = { idParent : this.id}
 
     this.spinner.show()
     this.service.findByIdParent(objeto).subscribe({
