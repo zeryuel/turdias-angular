@@ -69,7 +69,7 @@
             @for (item of table.content; track item.id; let i = $index) {
               <tr [ngClass]="{'bg-seleccion' : setting.recordId == item.id}" (click)="selectRecord(item)" (dblclick)="confirm()">
                 <td class="td-table" [ngClass]="table.lstColumn[0].style"> {{ i + 1 + (table.pageSize * (table.pageNumber - 1)) }} </td>
-                <td class="td-table" [ngClass]="table.lstColumn[1].style"> {{ item.id }} </td>
+                <td class="td-table" [ngClass]="table.lstColumn[1].style"> {{ ("0000" + item.id).slice(-4) }} </td>
                 <td class="td-table" [ngClass]="table.lstColumn[2].style"> {{ item.alternativeCode }} </td>
                 <td class="td-table" [ngClass]="table.lstColumn[3].style"> {{ item.name }} </td>
                 <td class="td-table" [ngClass]="table.lstColumn[4].style"> {{ item.brand.name }} </td>

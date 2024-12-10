@@ -6,5 +6,6 @@ export interface Authorizer {
   name: string;
   maximumValue: number;
 
+  userId: number;
   userName: string;
 }

@@ -40,6 +40,7 @@ export class AuthorizerComponent {
       idUser: ['', Validators.required],
       name: ['', Validators.required],
       maximumValue: ['', Validators.required],
+      userId: '',
       userName: ''
     })
 

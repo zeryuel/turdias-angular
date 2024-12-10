@@ -32,7 +32,7 @@ export class ModalInventoryComponent {
     stock: number,
     unitValue: number,
     position: string,
-    item: { id: number, name: string, alternativeCode: string, itemBrand: { id: number, name: string }, itemUnitMeasure: { id: number, name: string } }
+    product: { id: number, name: string, alternativeCode: string, brand: { id: number, name: string }, unitMeausure: { id: number, name: string } }
   };
 
   constructor(
@@ -51,19 +51,19 @@ export class ModalInventoryComponent {
       stock: 0,
       unitValue: 0,
       position: '',
-      item: { id: 0, name: '', alternativeCode: '', itemBrand: { id: 0, name: '' }, itemUnitMeasure: { id: 0, name: '' } }
+      product: { id: 0, name: '', alternativeCode: '', brand: { id: 0, name: '' }, unitMeausure: { id: 0, name: '' } }
     };
 
     this.paged = this.formBuilder.group({
       pageSize: 10,
       pageNumber: 1,
-      orderColumn: 'item.id',
+      orderColumn: 'product.id',
       order: 'ASC',
       lstFilter: this.formBuilder.array(
         [
-          this.formBuilder.group({ object: 'item', column: 'id', value: '', operator: 'equal' }),
-          this.formBuilder.group({ object: 'item', column: 'alternative_code', value: '', operator: 'like' }),
-          this.formBuilder.group({ object: 'item', column: 'name', value: '', operator: 'like' })
+          this.formBuilder.group({ object: 'product', column: 'id', value: '', operator: 'equal' }),
+          this.formBuilder.group({ object: 'product', column: 'alternative_code', value: '', operator: 'like' }),
+          this.formBuilder.group({ object: 'product', column: 'name', value: '', operator: 'like' })
         ]
       )
     });
