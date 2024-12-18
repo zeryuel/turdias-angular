@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { BsModalRef, BsModalService, ModalModule } from 'ngx-bootstrap/modal';
+import { Component } from '@angular/core';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
 import { Router } from '@angular/router';
 
@@ -10,11 +10,12 @@ import { UserService } from '../user/services/user.service';
 import { User } from '../user/interfaces/user.interface';
 import { environment } from '../../../environments/environment';
 import { UserDto } from '../../shared/interfaces/userDto.interface';
+import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, NgxSpinnerModule],
+  imports: [CommonModule, ReactiveFormsModule, NgxSpinnerModule, FormsModule, TypeaheadModule],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })

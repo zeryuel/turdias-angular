@@ -8,7 +8,10 @@ import { routes } from './app/app.routes';
 import { environment } from './environments/environment';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
+import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
+
 import { defineLocale } from 'ngx-bootstrap/chronos';
 import { esLocale } from 'ngx-bootstrap/locale';
 defineLocale('es', esLocale);
@@ -30,6 +33,7 @@ bootstrapApplication(AppComponent, {
     importProvidersFrom(BrowserAnimationsModule),
     importProvidersFrom(ModalModule.forRoot()),
     importProvidersFrom(BsDatepickerModule.forRoot()),
+    importProvidersFrom(TypeaheadModule.forRoot()),
 
     provideHttpClient(),
     {
@@ -40,4 +44,4 @@ bootstrapApplication(AppComponent, {
     },
   ],
 })
-  .catch((err) => console.error(err));
+.catch((err) => console.error(err));

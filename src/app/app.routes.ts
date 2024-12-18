@@ -109,7 +109,8 @@ export const routes: Routes = [
       { path: 'report-proof', component: ReportProofComponent },
       { path: 'report-entry', component: ReportEntryComponent },
       { path: 'report-departure', component: ReportDepartureComponent },
-      { path: 'home', component: HomeComponent }
+      { path: 'home', component: HomeComponent },
+      { path: 'about', component: AboutComponent }
     ]
   },
   {
