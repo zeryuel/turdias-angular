@@ -110,7 +110,8 @@ export const routes: Routes = [
       { path: 'report-entry', component: ReportEntryComponent },
       { path: 'report-departure', component: ReportDepartureComponent },
       { path: 'home', component: HomeComponent },
-      { path: 'about', component: AboutComponent }
+      { path: 'about', component: AboutComponent },
+      { path: 'manual', component: ManualComponent }
     ]
   },
   {

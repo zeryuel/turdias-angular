@@ -312,3 +312,10 @@ label .form-check-input {
   border-radius: .3rem;
 }
 /********************* Tree View ***********************/
+
+
+/********************* Typehead ***********************/
+.dropdown-item {
+  font-size: 11px;
+}
+/********************* Typehead ***********************/

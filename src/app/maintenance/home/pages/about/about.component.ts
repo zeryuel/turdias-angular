@@ -15,32 +15,26 @@ interface DataSourceType {
   imports: [CommonModule, FormsModule, TypeaheadModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-  <!-- <ng-template #customItemTemplate let-model="item">
-    <h5>This is: {{model | json}} </h5>
-  </ng-template> -->
+    <ng-template #customItemTemplate let-model="item">
+      <h5>This is: {{model | json}} </h5>
+    </ng-template>
 
-  <pre class="mb-3">Model: {{selectedValue | json}}</pre>
-  <pre class="mb-3">Selected option: {{selectedOption | json}}</pre>
-  <div>
-      <input [(ngModel)]="selectedValue"
+    <pre class="mb-3">Model: {{selectedValue | json}}</pre>
+    <pre class="mb-3">Selected option: {{selectedOption | json}}</pre>
+    <div>
+        <input
+          [(ngModel)]="selectedValue"
           [typeahead]="states"
           typeaheadOptionField="name"
           (typeaheadOnSelect)="onSelect($event)"
-          (typeaheadOnPreview)="onPreview($event)"
-          class="form-control">
-      <div style="float:right;width:160px;"
-          class="card card-block card-header mb-3">
-          Preview region:
-          <span *ngIf="previewOption; else noPreviewOption">{{previewOption?.region}}</span>
-          <ng-template #noPreviewOption><span>N/A</span></ng-template>
-      </div>
-  </div>
+          class="form-control form-control-sm text-uppercase">
+    </div>
   `
 })
 export class AboutComponent {
   selectedValue?: string;
   selectedOption?: DataSourceType;
-  previewOption?: DataSourceType;
+
   states: DataSourceType[] = [
     { id: 1, name: 'Alabama', region: 'South' },
     { id: 2, name: 'Alaska', region: 'West' },
@@ -96,13 +90,5 @@ export class AboutComponent {
 
   onSelect(event: TypeaheadMatch<DataSourceType>): void {
     this.selectedOption = event.item;
-  }
-
-  onPreview(event: TypeaheadMatch<DataSourceType>): void {
-    if (event) {
-      this.previewOption = event.item;
-    } else {
-      this.previewOption = undefined;
-    }
   }
 }
