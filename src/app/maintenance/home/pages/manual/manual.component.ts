@@ -40,7 +40,7 @@ interface GitHubUser {
             typeaheadOptionField="login"
             [typeahead]="suggestions$"
             [typeaheadAsync]="true"
-            class="form-control"
+            class="form-control form-control-sm"
             placeholder="Enter GitHub username">
 
     <div class="alert alert-danger" role="alert" *ngIf="errorMessage">

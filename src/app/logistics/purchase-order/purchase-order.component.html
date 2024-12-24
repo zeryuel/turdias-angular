@@ -206,7 +206,7 @@
                   <input formControlName="id" type="text" hidden/>
                   <input formControlName="ruc" id="supplierRuc" type="text" class="form-control form-control-sm" readonly
                     [ngClass]="{'is-invalid': model.get('supplier')?.get('id')?.errors && model.get('supplier')?.get('id')?.touched}"/>
-                  <input formControlName="reasonSocial" id="supplierReasonSocial" type="text" class="form-control form-control-sm w-50" readonly
+                  <input formControlName="reasonSocial" id="supplierReasonSocial" type="text" class="form-control form-control-sm w-50"
                     [ngClass]="{'is-invalid': model.get('supplier')?.get('id')?.errors && model.get('supplier')?.get('id')?.touched}"/>
                   <button (click)="searchSupplierReg()" type="button" class="btn btn-default btn-custom"><i class="fas fa-search"></i></button>
                   <button (click)="cleanSupplierReg()" type="button" class="btn btn-default btn-custom" title="Limpiar filtro"><i class="fas fa-times"></i></button>

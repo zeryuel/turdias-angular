@@ -11,25 +11,25 @@ declare var $: any
   imports: [],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-  <li id="li{{id}}">
+    <li id="li{{id}}">
 
-    <div (click)="onClickNodo()" id="txt{{id}}">
-      @if(nodoPadre){
-        <input type="checkbox" />
-      }
+      <div (click)="onClickNodo()" id="txt{{id}}">
+        @if(nodoPadre){
+          <input type="checkbox" />
+        }
 
-      <label id={{id}} for="txt{{id}}">
-        <i class="fa-solid fa-folder" style="font-size: 1rem; color: #5CA8F0; margin-left: 1rem;" ></i> {{nombre}}
-      </label>
-    </div>
+        <label id={{id}} for="txt{{id}}">
+          <i class="fa-solid fa-folder" style="font-size: 1rem; color: #5CA8F0; margin-left: 1rem;" ></i> {{nombre}}
+        </label>
+      </div>
 
-    <ul>
-      @for (item of lista; track item.id) {
-        <tree-node  id={{item.id}} nombre={{item.name}} esPadre={{item.is_parent}} cargado={{item.cargado}} expandido={{item.expandido}}> </tree-node>
-      }
-    </ul>
+      <ul>
+        @for (item of lista; track item.id) {
+          <tree-node  id={{item.id}} nombre={{item.name}} esPadre={{item.is_parent}} cargado={{item.cargado}} expandido={{item.expandido}}> </tree-node>
+        }
+      </ul>
 
-  </li>
+    </li>
   `
 })
 export class TreeNodeComponent implements OnInit {
