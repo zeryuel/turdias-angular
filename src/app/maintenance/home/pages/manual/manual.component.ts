@@ -1,32 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
+import { TypeaheadMatch, TypeaheadModule } from 'ngx-bootstrap/typeahead';
 import { map, noop, Observable, Observer, of, switchMap, tap } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
-
-interface GitHubUserSearchResponse {
-  total_count: number;
-  incomplete_results: boolean;
-  items: GitHubUser[];
-}
-
-interface GitHubUser {
-  login: string;
-  id:  number;
-  node_id: string;
-  avatar_url: string;
-  gravatar_id: string;
-  url: string;
-  html_url: string;
-  followers_url: string;
-  subscriptions_url: string;
-  organizations_url: string;
-  repos_url: string;
-  received_events_url: string;
-  type: string;
-  score: number;
-}
+import { Paged } from '../../../../shared/interfaces/paged.interface';
+import { SupplierService } from '../../../../logistics/supplier/services/supplier.service';
+import { Response } from '../../../../shared/interfaces/response.interface';
+import { Page } from '../../../../shared/interfaces/page.interface';
+import { Supplier } from '../../../../logistics/supplier/interfaces/supplier.interface';
 
 @Component({
   selector: 'app-manual',
@@ -34,14 +15,21 @@ interface GitHubUser {
   imports: [CommonModule, FormsModule, TypeaheadModule, ReactiveFormsModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
+    <ng-template #customItemTemplate let-model="item" let-index="index">
+      <h5>This is: {{model | json}} Index: {{ index }}</h5>
+    </ng-template>
+
     <pre class="card card-block card-header">Model: {{ search | json }}</pre>
+    <pre class="mb-3">Selected option: {{selectedOption | json}}</pre>
 
     <input [(ngModel)]="search"
-            typeaheadOptionField="login"
             [typeahead]="suggestions$"
             [typeaheadAsync]="true"
-            class="form-control form-control-sm"
-            placeholder="Enter GitHub username">
+            [typeaheadMinLength]="2"
+            [typeaheadItemTemplate]="customItemTemplate"
+            (typeaheadOnSelect)="onSelect($event)"
+            typeaheadOptionField="reasonSocial"
+            class="form-control form-control-sm text-uppercase">
 
     <div class="alert alert-danger" role="alert" *ngIf="errorMessage">
       {{ errorMessage }}
@@ -50,26 +38,38 @@ interface GitHubUser {
 })
 export class ManualComponent implements OnInit {
   search?: string;
-  suggestions$?: Observable<GitHubUser[]>;
+  suggestions$?: Observable<Supplier[]>;
   errorMessage?: string;
+  selectedOption?: Supplier;
 
-  constructor(private http: HttpClient) {}
+  constructor(private service: SupplierService) { }
 
   ngOnInit(): void {
+    let object: Paged = {
+      pageSize: 20,
+      pageNumber: 1,
+      orderColumn: "supplier.reason_social",
+      order: "ASC",
+      lstFilter: [
+        {
+          object: "supplier",
+          column: "reason_social",
+          value: "",
+          operator: "like"
+        }
+      ]
+    }
+
     this.suggestions$ = new Observable((observer: Observer<string | undefined>) => {
       observer.next(this.search);
     }).pipe(
       switchMap((query: string) => {
         if (query) {
-          // using github public api to get users by name
-          return this.http.get<GitHubUserSearchResponse>(
-            'https://api.github.com/search/users', {
-            params: { q: query }
-          }).pipe(
-            map((data: GitHubUserSearchResponse) => data && data.items || []),
+          object.lstFilter[0].value=query;
+          return this.service.findByPagination(object).pipe(
+            map((data: Response<Page>) => data && data.value.content || []),
             tap(() => noop, err => {
-              // in case of http error
-              this.errorMessage = err && err.message || 'Something goes wrong';
+              this.errorMessage = err && err.message || 'Error en la consulta';
             })
           );
         }
@@ -77,5 +77,9 @@ export class ManualComponent implements OnInit {
         return of([]);
       })
     );
+  }
+
+  onSelect(event: TypeaheadMatch<Supplier>): void {
+    this.selectedOption = event.item;
   }
 }
