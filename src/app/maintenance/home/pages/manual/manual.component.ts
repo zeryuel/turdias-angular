@@ -16,10 +16,11 @@ import { Supplier } from '../../../../logistics/supplier/interfaces/supplier.int
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <ng-template #customItemTemplate let-model="item" let-index="index">
-      <h5>This is: {{model | json}} Index: {{ index }}</h5>
+      {{model.ruc}} - {{ model.reasonSocial }}
     </ng-template>
 
     <pre class="card card-block card-header">Model: {{ search | json }}</pre>
+
     <pre class="mb-3">Selected option: {{selectedOption | json}}</pre>
 
     <input [(ngModel)]="search"
