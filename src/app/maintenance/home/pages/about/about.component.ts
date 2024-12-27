@@ -1,7 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { TypeaheadMatch, TypeaheadModule } from 'ngx-bootstrap/typeahead';
+import { SupplierService } from '../../../../logistics/supplier/services/supplier.service';
+import { Paged } from '../../../../shared/interfaces/paged.interface';
+import { map, Observable, Observer, switchMap, tap } from 'rxjs';
+import { Supplier } from '../../../../logistics/supplier/interfaces/supplier.interface';
+import { Page } from '../../../../shared/interfaces/page.interface';
 
 interface DataSourceType {
   id: number;
@@ -12,28 +17,38 @@ interface DataSourceType {
 @Component({
   selector: 'app-about',
   standalone: true,
-  imports: [CommonModule, FormsModule, TypeaheadModule],
+  imports: [CommonModule, FormsModule, TypeaheadModule, ReactiveFormsModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <ng-template #customItemTemplate let-model="item">
-      <h5>This is: {{model | json}} </h5>
+    <ng-template #templateSupplier let-model="item" let-index="index">
+      {{model.id}} - {{ model.name }}
     </ng-template>
 
-    <pre class="mb-3">Model: {{selectedValue | json}}</pre>
-    <pre class="mb-3">Selected option: {{selectedOption | json}}</pre>
-    <div>
-        <input
-          [(ngModel)]="selectedValue"
-          [typeahead]="states"
-          typeaheadOptionField="name"
-          (typeaheadOnSelect)="onSelect($event)"
-          class="form-control form-control-sm text-uppercase">
-    </div>
+    <form [formGroup]="myForm">
+      <input formControlName="state"
+              [typeaheadMinLength]="2"
+              [typeaheadItemTemplate]="templateSupplier"
+              [typeahead]="states"
+              typeaheadOptionField="name"
+              placeholder="Typeahead inside a form"
+              class="form-control">
+    </form>
   `
 })
-export class AboutComponent {
-  selectedValue?: string;
-  selectedOption?: DataSourceType;
+export class AboutComponent  {
+
+  constructor(
+    private formBuilder: FormBuilder,
+     private service: SupplierService
+  ) {
+
+  }
+  dataSupplier$?: Observable<Supplier[]>;
+
+  myForm: FormGroup = this.formBuilder.group({
+    state: '',
+    age: 30
+  })
 
   states: DataSourceType[] = [
     { id: 1, name: 'Alabama', region: 'South' },
@@ -88,7 +103,6 @@ export class AboutComponent {
     { id: 51, name: 'Wyoming', region: 'West' }
   ];
 
-  onSelect(event: TypeaheadMatch<DataSourceType>): void {
-    this.selectedOption = event.item;
-  }
+
+
 }

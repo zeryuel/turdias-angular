@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { BsModalRef, BsModalService, ModalModule } from 'ngx-bootstrap/modal';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
 
 import { ModalMessageComponent } from '../../shared/components/modal-message/modal-message.component';

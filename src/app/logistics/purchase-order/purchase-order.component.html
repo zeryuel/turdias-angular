@@ -204,12 +204,17 @@
                 <label for="supplierReasonSocial" class="col-9">RAZON SOCIAL</label>
                 <div class="input-group">
                   <input formControlName="id" type="text" hidden/>
-                  <input formControlName="ruc" id="supplierRuc" type="text" class="form-control form-control-sm" readonly
+                  <input formControlName="ruc" id="supplierRuc" type="text" class="form-control form-control-sm bg-custom" readonly
                     [ngClass]="{'is-invalid': model.get('supplier')?.get('id')?.errors && model.get('supplier')?.get('id')?.touched}"/>
-                  <input formControlName="reasonSocial" id="supplierReasonSocial" type="text" class="form-control form-control-sm w-50"
+
+                  <input
+                    formControlName="reasonSocial"
+                    id="supplierReasonSocial"
+                    type="text"
+                    class="form-control form-control-sm text-uppercase w-50"
                     [ngClass]="{'is-invalid': model.get('supplier')?.get('id')?.errors && model.get('supplier')?.get('id')?.touched}"/>
-                  <button (click)="searchSupplierReg()" type="button" class="btn btn-default btn-custom"><i class="fas fa-search"></i></button>
-                  <button (click)="cleanSupplierReg()" type="button" class="btn btn-default btn-custom" title="Limpiar filtro"><i class="fas fa-times"></i></button>
+                  <!-- <button (click)="searchSupplierReg()" type="button" class="btn btn-default btn-custom"><i class="fas fa-search"></i></button>
+                  <button (click)="cleanSupplierReg()" type="button" class="btn btn-default btn-custom" title="Limpiar filtro"><i class="fas fa-times"></i></button> -->
 
                   @if (model.get('supplier')?.get('id')?.hasError('required')) {<div class="invalid-feedback">Campo requerido </div>}
                 </div>
@@ -221,8 +226,8 @@
                   <input formControlName="id" type="text" hidden/>
                   <input formControlName="name" id="authorizerName" type="text" class="form-control form-control-sm" readonly
                     [ngClass]="{'is-invalid': model.get('authorizer')?.get('id')?.errors && model.get('authorizer')?.get('id')?.touched}" />
-                  <button (click)="searchAuthorizerReg()" type="button" class="btn btn-default btn-custom"><i class="fas fa-search"></i></button>
-                  <button (click)="cleanAuthorizerReg()" type="button" class="btn btn-default btn-custom" title="Limpiar filtro"><i class="fas fa-times"></i></button>
+                  <!-- <button (click)="searchAuthorizerReg()" type="button" class="btn btn-default btn-custom"><i class="fas fa-search"></i></button>
+                  <button (click)="cleanAuthorizerReg()" type="button" class="btn btn-default btn-custom" title="Limpiar filtro"><i class="fas fa-times"></i></button> -->
 
                   @if (model.get('authorizer')?.get('id')?.hasError('required')) {<div class="invalid-feedback">Campo requerido </div>}
                 </div>

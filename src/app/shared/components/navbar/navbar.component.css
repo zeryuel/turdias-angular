@@ -1,4 +1,4 @@
-/* .navbar-principal {
+.navbar-principal {
   background: #c00000 !important;
   border-bottom: 0.1px solid #000000;
   border-bottom: .01rem solid #496293;
@@ -11,9 +11,9 @@
   border-bottom: 0.1px solid #000000;
   height: 2.4rem;
   font-size: .7rem;
-} */
+}
 
-.navbar-principal {
+/* .navbar-principal {
   background: #43567b;
   background: -moz-linear-gradient(top, #43567b 0%, #273d6e 2%, #1a3269 3%, #21386f 10%, #334d81 25%, #6684b7 62%, #7998ca 80%, #8eacda 92%, #a8c0e6 100%);
   background: -webkit-linear-gradient(top, #43567b 0%, #273d6e 2%, #1a3269 3%, #21386f 10%, #334d81 25%, #6684b7 62%, #7998ca 80%, #8eacda 92%, #a8c0e6 100%);
@@ -32,7 +32,7 @@
   border-bottom: .05rem solid #000000;
   font-size: .7rem;
   height: 2.6rem;
-}
+} */
 
 /* Cambiar el brand y el color de texto */
 .navbar-secundary .navbar-brand,

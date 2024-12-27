@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { BsDatepickerModule, BsLocaleService } from 'ngx-bootstrap/datepicker';
@@ -13,7 +13,6 @@ import { PurchaseOrderService } from './services/purchase-order.service';
 import { ModalMessageComponent } from '../../shared/components/modal-message/modal-message.component';
 import { PurchaseOrder } from './interfaces/purchase-order.interface';
 import { PurchaseOrderDetail } from './interfaces/purchase-order-detail.interface';
-import { ModalCostCenterComponent } from '../shared/components/modal-cost-center/modal-cost-center.component';
 import { ModalAuthorizerComponent } from '../shared/components/modal-authorizer/modal-authorizer.component';
 import { SettingPurchaseOrder } from './interfaces/setting-purchase-order.interface';
 import { ModalSupplierComponent } from '../shared/components/modal-supplier/modal-supplier.component';
@@ -21,18 +20,21 @@ import { Supplier } from '../supplier/interfaces/supplier.interface';
 import { PurchaseOrderDetailComponent } from './components/purchase-order-detail/purchase-order-detail.component';
 import { environment } from '../../../environments/environment';
 import { ProofPaymentType } from '../shared/interfaces/proof-payment-type.interface';
-import { Filter } from '../../shared/interfaces/filter.interface';
 import { Currency } from '../shared/interfaces/currency.interface';
-import { CostCenter } from '../cost-center/interfaces/cost-center.interface';
 import { Authorizer } from '../authorizer/interfaces/authorizer.interface';
+import { map, Observable, Observer, of, switchMap, tap } from 'rxjs';
+import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
+
+import { Response } from '../../shared/interfaces/response.interface';
 
 @Component({
   selector: 'app-purchase-order',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, NgxSpinnerModule, BsDatepickerModule, FormsModule],
-  templateUrl: './purchase-order.component.html'
+  imports: [CommonModule, ReactiveFormsModule, NgxSpinnerModule, BsDatepickerModule, FormsModule, TypeaheadModule],
+  templateUrl: './purchase-order.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PurchaseOrderComponent {
+export class PurchaseOrderComponent implements OnInit {
   @ViewChild('filterId') filterId!: ElementRef;
   @ViewChild('chkIncludeTax') chkIncludeTax!: ElementRef;
 
@@ -41,6 +43,9 @@ export class PurchaseOrderComponent {
   public setting: SettingPurchaseOrder;
   public table: Table;
   public table2: Table;
+
+  dataSupplier$?: Observable<Supplier[]>;
+  errorSupplier?: string;
 
   constructor(
     private bsModalService: BsModalService,
@@ -67,11 +72,11 @@ export class PurchaseOrderComponent {
       salePrice: '0.00',
       saleTax: '0.00',
       proofPaymentType: this.formBuilder.group({ id: 1 }),
-      supplier: this.formBuilder.group({ id: ['', [Validators.required]], ruc:'', reasonSocial: '' }),
+      supplier: this.formBuilder.group({ id: ['', [Validators.required]], ruc: '', reasonSocial: '' }),
       authorizer: this.formBuilder.group({ id: ['', [Validators.required]], name: '' }),
       paymentMethod: this.formBuilder.group({ id: 1, name: '' }),
       currency: this.formBuilder.group({ id: 1, name: '' }),
-      state: this.formBuilder.group({ id: 11, name: '', icon:'', color:'' }),
+      state: this.formBuilder.group({ id: 11, name: '', icon: '', color: '' }),
       lstPurchaseOrderDetail: Array<PurchaseOrderDetail>
     });
     this.model.get('lstPurchaseOrderDetail')?.setValue([]);
@@ -99,7 +104,7 @@ export class PurchaseOrderComponent {
       onlyView: false,
       mainScreen: false,
       currencyAcronym: '',
-      taxValue : 0,
+      taxValue: 0,
       stateId: 0,
       filterSupplier: '',
       filterRangeDate: [],
@@ -117,7 +122,7 @@ export class PurchaseOrderComponent {
       totalPages: 1,
       totalElements: 0,
       startElement: 0,
-      endElement : 0,
+      endElement: 0,
       content: [],
       lstColumn: [
         { name: 'N°', width: '4%', style: 'text-center' },
@@ -137,7 +142,7 @@ export class PurchaseOrderComponent {
         { id: 30, name: '30' },
         { id: 50, name: '50' }
       ],
-      lstPageNumber:[
+      lstPageNumber: [
         { value: 'Anterior', style: 'page-item disabled' },
         { value: 'Siguiente', style: 'page-item disabled' }
       ]
@@ -151,7 +156,7 @@ export class PurchaseOrderComponent {
       totalPages: 1,
       totalElements: 0,
       startElement: 0,
-      endElement : 0,
+      endElement: 0,
       content: [],
       lstColumn: [
         { name: 'N°', width: '3%', style: 'text-center' },
@@ -171,12 +176,12 @@ export class PurchaseOrderComponent {
         { id: 30, name: '30' },
         { id: 50, name: '50' }
       ],
-      lstPageNumber:[
+      lstPageNumber: [
         { value: 'Anterior', style: 'page-item disabled' },
         { value: 'Siguiente', style: 'page-item disabled' }
       ]
     }
-   }
+  }
 
   ngOnInit(): void {
     let object: Paged = Object.assign({}, this.paged.value);
@@ -202,6 +207,34 @@ export class PurchaseOrderComponent {
       },
       error: (err) => { this.exceptionHandler(err) }
     });
+
+    let object1: Paged = {
+      pageSize: 20,
+      pageNumber: 1,
+      orderColumn: "supplier.reason_social",
+      order: "ASC",
+      lstFilter: [{ object: "supplier", column: "reason_social", value: "", operator: "like" }]
+    }
+
+    this.dataSupplier$ = new Observable((observer: Observer<string | undefined>) => {
+      observer.next(this.model.get('reasonSocial')?.value);
+    }).pipe(
+      switchMap((query: string) => {
+        if (query) {
+          object1.lstFilter[0].value = query;
+
+          return this.service.findByPagination(object1).pipe(
+            map((data: Response<Page>) => data && data.value.content || []),
+            tap({
+              next: x => { },
+              error: err => { this.errorSupplier = err && err.message || 'Error en la consulta'; }
+            })
+          );
+        }
+
+        return of([]);
+      })
+    );
   }
 
   public search() {
@@ -255,9 +288,9 @@ export class PurchaseOrderComponent {
           else
             this.setting.onlyView = true;
 
-            if (this.model.get('includeTax')?.value == 1)
-              this.chkIncludeTax.nativeElement.checked = true;
-            else
+          if (this.model.get('includeTax')?.value == 1)
+            this.chkIncludeTax.nativeElement.checked = true;
+          else
             this.chkIncludeTax.nativeElement.checked = false;
 
           this.tableMapper(this.model.get('lstPurchaseOrderDetail')?.value, this.table2);
@@ -417,7 +450,7 @@ export class PurchaseOrderComponent {
                     <tr>
                       <td colspan="3"></td>
                       <td class="td-print text-left" style="font-weight: bold;">Sub Total</td>
-                      <td class="td-print text-end" style="font-weight: bold;">` + purchaseOrder.saleValue .toFixed(2) + `</td>
+                      <td class="td-print text-end" style="font-weight: bold;">` + purchaseOrder.saleValue.toFixed(2) + `</td>
                     </tr>
                     <tr>
                       <td colspan="3" rowspan="2"></td>
@@ -551,11 +584,11 @@ export class PurchaseOrderComponent {
       salePrice: '0.00',
       saleTax: '0.00',
       proofPaymentType: { id: 1 },
-      supplier: { id: '', ruc:'', reasonSocial: '' },
+      supplier: { id: '', ruc: '', reasonSocial: '' },
       authorizer: { id: '', name: '' },
       paymentMethod: { id: 1, name: '' },
       currency: { id: 1, name: '' },
-      state: { id: 11, name: '', icon:'', color:'' }
+      state: { id: 11, name: '', icon: '', color: '' }
     });
     this.model.get('lstPurchaseOrderDetail')?.setValue([]);
 
@@ -638,7 +671,7 @@ export class PurchaseOrderComponent {
     let exist: PurchaseOrderDetail;
 
     let initialState = { object };
-    this.bsModalRef = this.bsModalService.show(PurchaseOrderDetailComponent, { initialState, class: 'modal-xl-custom modal-dialog-custom', backdrop: 'static'})
+    this.bsModalRef = this.bsModalService.show(PurchaseOrderDetailComponent, { initialState, class: 'modal-xl-custom modal-dialog-custom', backdrop: 'static' })
     this.bsModalRef.content.response.subscribe((response: PurchaseOrderDetail) => {
       if (response != null) {
         exist = array.find(x => x.product.id == response.product.id)!;
@@ -694,9 +727,9 @@ export class PurchaseOrderComponent {
           array[index].unitPrice = response.unitValue + response.unitTax;
         }
 
-        array[index].unitValue = Number( array[index].unitValue.toFixed(2));
-        array[index].unitTax = Number( array[index].unitTax.toFixed(2));
-        array[index].unitPrice = Number( array[index].unitPrice.toFixed(2));
+        array[index].unitValue = Number(array[index].unitValue.toFixed(2));
+        array[index].unitTax = Number(array[index].unitTax.toFixed(2));
+        array[index].unitPrice = Number(array[index].unitPrice.toFixed(2));
         this.calculteTotals();
       };
     });
@@ -828,7 +861,7 @@ export class PurchaseOrderComponent {
     }
   }
 
-  public includeTax(event: any){
+  public includeTax(event: any) {
     let { checked } = event.target;
 
     let array: Array<PurchaseOrderDetail> = this.model.get('lstPurchaseOrderDetail')?.value;
@@ -911,7 +944,7 @@ export class PurchaseOrderComponent {
       table.lstPageNumber.push({ value: 'Siguiente', style: 'page-item disabled' });
     }
 
-    if (table.content.length > 0 )
+    if (table.content.length > 0)
       table.startElement = 1 + (table.pageSize * (table.pageNumber - 1));
 
     table.endElement = page.numberOfElements + (table.pageSize * (table.pageNumber - 1));
