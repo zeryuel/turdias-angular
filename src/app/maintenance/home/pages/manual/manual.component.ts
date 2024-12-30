@@ -66,7 +66,7 @@ export class ManualComponent implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
-    private service: SupplierService
+    private supplierService: SupplierService
   ) {
 
     this.myForm = this.formBuilder.group({
@@ -77,7 +77,7 @@ export class ManualComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    let object: Paged = {
+    let paged: Paged = {
       pageSize: 20,
       pageNumber: 1,
       orderColumn: "supplier.reason_social",
@@ -90,9 +90,9 @@ export class ManualComponent implements OnInit {
     }).pipe(
       switchMap((query: string) => {
         if (query) {
-          object.lstFilter[0].value = query;
+          paged.lstFilter[0].value = query;
 
-          return this.service.findByPagination(object).pipe(
+          return this.supplierService.findByPagination(paged).pipe(
             map((data: Response<Page>) => data && data.value.content || []),
             tap({
               next: x => { },

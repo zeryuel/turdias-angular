@@ -23,9 +23,10 @@ import { ProofPaymentType } from '../shared/interfaces/proof-payment-type.interf
 import { Currency } from '../shared/interfaces/currency.interface';
 import { Authorizer } from '../authorizer/interfaces/authorizer.interface';
 import { map, Observable, Observer, of, switchMap, tap } from 'rxjs';
-import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
+import { TypeaheadMatch, TypeaheadModule } from 'ngx-bootstrap/typeahead';
 
 import { Response } from '../../shared/interfaces/response.interface';
+import { SupplierService } from '../supplier/services/supplier.service';
 
 @Component({
   selector: 'app-purchase-order',
@@ -46,6 +47,8 @@ export class PurchaseOrderComponent implements OnInit {
 
   dataSupplier$?: Observable<Supplier[]>;
   errorSupplier?: string;
+  loadingSupplier?: boolean;
+  noResultSupplier = false;
 
   constructor(
     private bsModalService: BsModalService,
@@ -53,7 +56,8 @@ export class PurchaseOrderComponent implements OnInit {
     private bsLocaleService: BsLocaleService,
     private spinner: NgxSpinnerService,
     private formBuilder: FormBuilder,
-    private service: PurchaseOrderService
+    private service: PurchaseOrderService,
+    private supplierService: SupplierService
   ) {
     this.bsLocaleService.use('es');
 
@@ -208,7 +212,7 @@ export class PurchaseOrderComponent implements OnInit {
       error: (err) => { this.exceptionHandler(err) }
     });
 
-    let object1: Paged = {
+    let paged: Paged = {
       pageSize: 20,
       pageNumber: 1,
       orderColumn: "supplier.reason_social",
@@ -217,13 +221,13 @@ export class PurchaseOrderComponent implements OnInit {
     }
 
     this.dataSupplier$ = new Observable((observer: Observer<string | undefined>) => {
-      observer.next(this.model.get('reasonSocial')?.value);
+      observer.next(this.model.get('supplier')?.get('reasonSocial')?.value);
     }).pipe(
       switchMap((query: string) => {
         if (query) {
-          object1.lstFilter[0].value = query;
+          paged.lstFilter[0].value = query;
 
-          return this.service.findByPagination(object1).pipe(
+          return this.supplierService.findByPagination(paged).pipe(
             map((data: Response<Page>) => data && data.value.content || []),
             tap({
               next: x => { },
@@ -1004,4 +1008,26 @@ export class PurchaseOrderComponent implements OnInit {
     let initialState: any = { tipo: 2, textoPredeterminado: message };
     this.bsModalRef = this.bsModalService.show(ModalMessageComponent, { initialState, class: 'modal-dialog-custom' });
   }
+
+  onSelectSupplier(event: TypeaheadMatch<Supplier>): void {
+      let supplier: Supplier = event.item;
+      this.model.get('supplier')?.get('id')?.setValue(supplier.id);
+      this.model.get('supplier')?.get('ruc')?.setValue(supplier.ruc);
+      this.model.get('supplier')?.get('reasonSocial')?.setValue(supplier.reasonSocial);
+    }
+
+    onKeyDown(event: any) {
+      if (event.keyCode === 8 || event.keyCode === 46) {
+        this.model.get('supplier')?.get('id')?.setValue('');
+        this.model.get('supplier')?.get('ruc')?.setValue('');
+      }
+    }
+
+    onLoadingSupplier(e: boolean): void {
+      this.loadingSupplier = e;
+    }
+
+    onNoResultsSupplier(event: boolean): void {
+      this.noResultSupplier = event;
+    }
 }
