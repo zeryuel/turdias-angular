@@ -11,28 +11,50 @@ import { Filter } from '../../../../shared/interfaces/filter.interface';
 import { Product } from '../../../product/interfaces/product.interface';
 import { ModalCostCenterComponent } from '../../../shared/components/modal-cost-center/modal-cost-center.component';
 import { CostCenter } from '../../../cost-center/interfaces/cost-center.interface';
+import { TypeaheadMatch, TypeaheadModule } from 'ngx-bootstrap/typeahead';
+import { map, Observable, Observer, of, switchMap, tap } from 'rxjs';
+import { CostCenterService } from '../../../cost-center/services/cost-center.service';
+import { Paged } from '../../../../shared/interfaces/paged.interface';
+import { Page } from '../../../../shared/interfaces/page.interface';
+import { Response } from '../../../../shared/interfaces/response.interface';
+import { ProductService } from '../../../product/services/product.service';
 
 @Component({
   selector: 'app-purchase-order-detail',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, NgxSpinnerModule],
+  imports: [CommonModule, ReactiveFormsModule, NgxSpinnerModule, TypeaheadModule],
   templateUrl: './purchase-order-detail.component.html'
 })
 export class PurchaseOrderDetailComponent {
+  @Output() response = new EventEmitter();
+  @ViewChild('costCenterName') costCenterName!: ElementRef;
+  @ViewChild('productName') productName!: ElementRef;
+  @ViewChild('amount') amount!: ElementRef;
+  @ViewChild('unitValue') unitValue!: ElementRef;
+  @ViewChild('btnConfirm') btnConfirm!: ElementRef;
+
   public object: PurchaseOrderDetail | undefined;
   public model: FormGroup;
 
-  @Output() response = new EventEmitter();
-  @ViewChild('txtAmount', { static: false }) txtAmount!: ElementRef;
-  @ViewChild('txtUnitValue', { static: false }) txtUnitValue!: ElementRef;
-  @ViewChild('btnConfirm', { static: false }) btnConfirm!: ElementRef;
+  dataCostCenter$?: Observable<CostCenter[]>;
+  errorCostCenter?: string;
+  loadingCostCenter?: boolean;
+  noResultCostCenter = false;
+
+  dataProduct$?: Observable<Product[]>;
+  errorProduct?: string;
+  loadingProduct?: boolean;
+  noResultProduct = false;
 
   constructor(
     private bsModalService: BsModalService,
     public bsModalRef: BsModalRef,
     public bsModalRefItem: BsModalRef,
     public bsModalRefCostCenter: BsModalRef,
-    private formBuilder: FormBuilder) {
+    private formBuilder: FormBuilder,
+    private costCenterService: CostCenterService,
+    private productService: ProductService
+  ) {
 
     this.model = this.formBuilder.group({
       id: '0',
@@ -66,8 +88,59 @@ export class PurchaseOrderDetailComponent {
       });
     });
 
+    this.dataProduct$ = new Observable((observer: Observer<string | undefined>) => {
+      observer.next(this.model.get('product')?.get('name')?.value);
+    }).pipe(
+      switchMap((query: string) => {
+        if (query) {
+
+          let paged: Paged = {
+            pageSize: 20,
+            pageNumber: 1,
+            orderColumn: "product.name",
+            order: "ASC",
+            lstFilter: [{ object: "product", column: "name", value: query, operator: "like" }]
+          }
+          return this.productService.findByPagination(paged).pipe(
+            map((data: Response<Page>) => data && data.value.content || []),
+            tap({
+              next: x => { },
+              error: err => { this.errorProduct = err && err.message || 'Error en la consulta'; }
+            })
+          );
+        }
+
+        return of([]);
+      })
+    );
+
+    this.dataCostCenter$ = new Observable((observer: Observer<string | undefined>) => {
+      observer.next(this.model.get('costCenter')?.get('name')?.value);
+    }).pipe(
+      switchMap((query: string) => {
+        if (query) {
+
+          let paged: Paged = {
+            pageSize: 20,
+            pageNumber: 1,
+            orderColumn: "costCenter.name",
+            order: "ASC",
+            lstFilter: [{ object: "costCenter", column: "name", value: query, operator: "like" }]
+          }
+          return this.costCenterService.findByPagination(paged).pipe(
+            map((data: Response<Page>) => data && data.value.content || []),
+            tap({
+              next: x => { },
+              error: err => { this.errorCostCenter = err && err.message || 'Error en la consulta'; }
+            })
+          );
+        }
+
+        return of([]);
+      })
+    );
+
     if (this.object != undefined) {
-      console.log(this.object)
       this.model.get('id')?.setValue(this.object.id);
       this.model.get('idPurchaseOrder')?.setValue(this.object.idPurchaseOrder);
       this.model.get('amount')?.setValue(this.object.amount);
@@ -86,11 +159,12 @@ export class PurchaseOrderDetailComponent {
       this.model.get('costCenter')?.get('id')?.setValue(this.pad(this.object.costCenter.id, 3, 0));
       this.model.get('costCenter')?.get('name')?.setValue(this.object.costCenter.name);
     }
+    setTimeout(() => { this.productName.nativeElement.focus(); }, 0);
   }
 
   public searchCostCenter() {
-    let lstFilter: Filter[] =  [];
-    let initialState = { lstFilter : lstFilter };
+    let lstFilter: Filter[] = [];
+    let initialState = { lstFilter: lstFilter };
 
     this.bsModalRefCostCenter = this.bsModalService.show(ModalCostCenterComponent, { initialState, class: 'modal-lg modal-dialog-centered', backdrop: 'static' })
     this.bsModalRefCostCenter.content.response.subscribe((response: CostCenter) => {
@@ -102,8 +176,8 @@ export class PurchaseOrderDetailComponent {
   }
 
   public searchProduct() {
-    let lstFilter: Filter[] =  [];
-    let initialState = { lstFilter : lstFilter };
+    let lstFilter: Filter[] = [];
+    let initialState = { lstFilter: lstFilter };
 
     this.bsModalRefItem = this.bsModalService.show(ModalProductComponent, { initialState, class: 'modal-xl-custom modal-dialog-centered', backdrop: 'static' })
     this.bsModalRefItem.content.response.subscribe((response: Product) => {
@@ -114,7 +188,7 @@ export class PurchaseOrderDetailComponent {
         this.model.get('product')?.get('brand')?.get('name')?.setValue(response.brand.name);
         this.model.get('product')?.get('unitMeasure')?.get('id')?.setValue(response.unitMeasure.id);
         this.model.get('product')?.get('unitMeasure')?.get('name')?.setValue(response.unitMeasure.name);
-        this.txtAmount.nativeElement.focus();
+        this.amount.nativeElement.focus();
       }
     });
   }
@@ -151,11 +225,13 @@ export class PurchaseOrderDetailComponent {
     }
   }
 
-  public onKeyUpAmount() {
-    this.txtUnitValue.nativeElement.focus();
+  public onKeyDownAmount(event: any) {
+    if (event.keyCode === 13) {
+      this.unitValue.nativeElement.focus();
+    }
   }
 
-  public onKeyUpUnitValue() {
+  public onKeyDownUnitValue(event: any) {
     let amount: number = 0;
     let unitValue: number = 0;
     let subTotal: number = 0;
@@ -168,7 +244,10 @@ export class PurchaseOrderDetailComponent {
       subTotal = 0;
 
     this.model.get('subTotal')?.setValue(subTotal.toFixed(2));
-    this.btnConfirm.nativeElement.focus();
+
+    if (event.keyCode === 13) {
+      this.btnConfirm.nativeElement.focus();
+    }
   }
 
   private pad(n: any, width: number, z: any) {
@@ -219,5 +298,51 @@ export class PurchaseOrderDetailComponent {
   public cancel(): void {
     this.response.emit(null);
     this.bsModalRef.hide();
+  }
+
+  onSelectCostCenter(event: TypeaheadMatch<CostCenter>): void {
+    let costCenter: CostCenter = event.item;
+    this.model.get('costCenter')?.get('id')?.setValue(costCenter.id);
+    this.model.get('costCenter')?.get('name')?.setValue(costCenter.name);
+    this.amount.nativeElement.focus();
+  }
+
+  onKeyDownCostCenter(event: any) {
+    if (event.keyCode === 8 || event.keyCode === 46) {
+      this.model.get('costCenter')?.get('id')?.setValue('');
+    }
+  }
+
+  onLoadingCostCenter(e: boolean): void {
+    this.loadingCostCenter = e;
+  }
+
+  onNoResultsCostCenter(event: boolean): void {
+    this.noResultCostCenter = event;
+  }
+
+  onSelectProduct(event: TypeaheadMatch<Product>): void {
+    let product: Product = event.item;
+    this.model.get('product')?.get('id')?.setValue(this.pad(product.id, 4, 0));
+    this.model.get('product')?.get('name')?.setValue(product.name);
+    this.model.get('product')?.get('brand')?.get('name')?.setValue(product.brand.name);
+    this.model.get('product')?.get('unitMeasure')?.get('name')?.setValue(product.unitMeasure.name);
+    this.costCenterName.nativeElement.focus();
+  }
+
+  onKeyDownProduct(event: any) {
+    if (event.keyCode === 8 || event.keyCode === 46) {
+      this.model.get('product')?.get('id')?.setValue('');
+      this.model.get('product')?.get('brand')?.get('name')?.setValue('');
+      this.model.get('product')?.get('unitMeasure')?.get('name')?.setValue('');
+    }
+  }
+
+  onLoadingProduct(e: boolean): void {
+    this.loadingProduct = e;
+  }
+
+  onNoResultsProduct(event: boolean): void {
+    this.noResultProduct = event;
   }
 }

@@ -14,7 +14,7 @@
 
         <div [formGroupName]="0" class="col-1">
           <label for="filterId">NUMERO</label>
-          <input formControlName="value" id="filterId" #filterId type="text" class="form-control form-control-sm text-uppercase" maxlength="10" autocomplete="off"
+          <input formControlName="value" id="filterId" type="text" class="form-control form-control-sm text-uppercase" maxlength="10" autocomplete="off" #filterId
             (keyup.enter)="search()" (keypress)="onKeyPressAlfaNumerico($event)" [ngClass]="{'is-invalid': paged.get('lstFilter')?.get('0')?.get('value')?.errors}" />
 
             @if (paged.get('lstFilter')?.get('0')?.get('value')?.hasError('pattern')) {<div class="invalid-feedback">Ingrese solo caracteres validos</div>}
@@ -196,7 +196,7 @@
 
               <div formGroupName="proofPaymentType" class="col-2">
                 <label for="proofPaymentTypeId">TIPO COMPROBANTE</label>
-                <select formControlName="id" id="proofPaymentTypeId" class="form-select" (change)="onChangeProofPaymentType()">
+                <select formControlName="id" id="proofPaymentTypeId" class="form-select" (change)="onChangeProofPaymentType()" #proofPaymentTypeId>
                   @for (item of setting.lstProofPaymentType; track $index) {
                     <option [value]="item.id">{{item.name}}</option>
                   }
@@ -211,18 +211,20 @@
                   <input formControlName="ruc" id="supplierRuc" type="text" class="form-control form-control-sm bg-custom" readonly tabindex="-1"
                     [ngClass]="{'is-invalid': model.get('supplier')?.get('id')?.errors && model.get('supplier')?.get('id')?.touched}"/>
 
-                  <input [typeahead]="dataSupplier$"
+                  <input
+                    [typeahead]="dataSupplier$"
                     [typeaheadAsync]="true"
                     [typeaheadMinLength]="2"
                     [typeaheadItemTemplate]="templateSupplier"
                     (typeaheadOnSelect)="onSelectSupplier($event)"
                     (typeaheadLoading)="onLoadingSupplier($event)"
                     (typeaheadNoResults)="onNoResultsSupplier($event)"
-                    (keydown)="onKeyDown($event)"
+                    (keydown)="onKeyDownSupplier($event)"
                     formControlName="reasonSocial"
                     id="supplierReasonSocial"
+                    #supplierReasonSocial
                     type="text"
-                    class="form-control form-control-sm text-uppercase w-50"
+                    class="form-control form-control-sm w-50 text-uppercase"
                     [ngClass]="{'is-invalid': model.get('supplier')?.get('id')?.errors && model.get('supplier')?.get('id')?.touched}"/>
                   <button (click)="searchSupplierReg()" type="button" class="btn btn-default btn-custom" tabindex="-1"><i class="fas fa-search"></i></button>
                   <button (click)="cleanSupplierReg()" type="button" class="btn btn-default btn-custom" title="Limpiar filtro" tabindex="-1"><i class="fas fa-times"></i></button>
@@ -235,7 +237,21 @@
                 <label for="authorizerName" class="col-12">AUTORIZADOR</label>
                 <div class="input-group">
                   <input formControlName="id" type="text" hidden/>
-                  <input formControlName="name" id="authorizerName" type="text" class="form-control form-control-sm" readonly
+
+                  <input
+                    [typeahead]="dataAuthorizer$"
+                    [typeaheadAsync]="true"
+                    [typeaheadMinLength]="2"
+                    (typeaheadOnSelect)="onSelectAuthorizer($event)"
+                    (typeaheadLoading)="onLoadingAuthorizer($event)"
+                    (typeaheadNoResults)="onNoResultsAuthorizer($event)"
+                    (keydown)="onKeyDownAuthorizer($event)"
+                    typeaheadOptionField="name"
+                    formControlName="name"
+                    id="authorizerName"
+                    type="text"
+                    class="form-control form-control-sm text-uppercase"
+                    #authorizerName
                     [ngClass]="{'is-invalid': model.get('authorizer')?.get('id')?.errors && model.get('authorizer')?.get('id')?.touched}" />
                   <button (click)="searchAuthorizerReg()" type="button" class="btn btn-default btn-custom" tabindex="-1"><i class="fas fa-search"></i></button>
                   <button (click)="cleanAuthorizerReg()" type="button" class="btn btn-default btn-custom" title="Limpiar filtro" tabindex="-1"><i class="fas fa-times"></i></button>
@@ -246,16 +262,18 @@
 
               <div formGroupName="currency" class="col-1">
                 <label for="currencyId">MONEDA</label>
-                <select formControlName="id" id="currencyId" class="form-select" (change)="onChangeCurrency()">
+                <select formControlName="id" id="currencyId" class="form-select" (change)="onChangeCurrency()" #currencyId>
                   @for (item of setting.lstCurrency; track $index) {
                     <option [value]="item.id">{{item.shortName}}</option>
                   }
                 </select>
               </div>
 
-              <div class="col-1">
+              <div class="col-1" [hidden]="model.get('currency')?.get('id')?.value == 1">
                 <label for="exchangeRate">TIPO CAMBIO</label>
-                <input formControlName="exchangeRate" id="exchangeRate" type="text" class="form-control form-control-sm" maxlength="5">
+                <input formControlName="exchangeRate" id="exchangeRate" type="text" class="form-control form-control-sm" maxlength="5"
+                [ngClass]="{'is-invalid': model.get('exchangeRate')?.errors && model.get('exchangeRate')?.touched}">
+                @if (model.get('exchangeRate')?.hasError('required')) {<div class="invalid-feedback">Campo requerido </div>}
               </div>
 
             </div>
@@ -288,16 +306,18 @@
 
               <div formGroupName="paymentMethod" class="col-1">
                 <label for="paymentMethodId">FORMA PAGO</label>
-                <select formControlName="id" id="paymentMethodId" class="form-select">
+                <select formControlName="id" id="paymentMethodId" class="form-select" (change)="onChangePaymentMethod()">
                   @for (item of setting.lstPaymentMethod; track $index) {
                     <option [value]="item.id">{{item.name}}</option>
                   }
                 </select>
               </div>
 
-              <div class="col-1">
+              <div class="col-1" [hidden]="model.get('paymentMethod')?.get('id')?.value == 1">
                 <label for="creditDays">DIAS CREDITO</label>
-                <input formControlName="creditDays" id="creditDays" type="text" class="form-control form-control-sm" maxlength="3">
+                <input formControlName="creditDays" id="creditDays" type="text" class="form-control form-control-sm" maxlength="3"
+                [ngClass]="{'is-invalid': model.get('creditDays')?.errors && model.get('creditDays')?.touched}">
+                @if (model.get('creditDays')?.hasError('required')) {<div class="invalid-feedback">Campo requerido </div>}
               </div>
 
               <div class="col-6">
@@ -396,7 +416,7 @@
                           <div class="col-6">
                             <input formControlName="saleValue"
                               [value]="model.get('saleValue')?.value | number: '1.2-2'" type="text"
-                              class="form-control form-control-sm fw-bold bg-white text-end" readonly>
+                              class="form-control form-control-sm fw-bold bg-custom text-end" readonly tabindex="-1">
                           </div>
 
                         </div>
@@ -414,7 +434,7 @@
                           <div class="col-6">
                             <input formControlName="saleTax"
                               [value]="model.get('saleTax')?.value | number: '1.2-2'" type="text"
-                              class="form-control form-control-sm fw-bold bg-white text-end" readonly>
+                              class="form-control form-control-sm fw-bold bg-custom text-end" readonly tabindex="-1">
                           </div>
 
                         </div>
@@ -431,7 +451,7 @@
                           <div class="col-6">
                             <input formControlName="salePrice"
                               [value]="model.get('salePrice')?.value | number: '1.2-2'" type="text"
-                              class="form-control form-control-sm fw-bold bg-white text-end" readonly>
+                              class="form-control form-control-sm fw-bold bg-custom text-end" readonly tabindex="-1">
                           </div>
 
                         </div>

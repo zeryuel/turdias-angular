@@ -13,7 +13,7 @@ import { BrandService } from '../../services/brand.service';
 import { Brand } from '../../interfaces/brand.interface';
 
 @Component({
-  selector: 'app-manage-brand',
+  selector: 'manage-brand',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, NgxSpinnerModule],
   templateUrl: './manage-brand.component.html'

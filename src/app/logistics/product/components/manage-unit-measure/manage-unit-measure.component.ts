@@ -13,7 +13,7 @@ import { UnitMeasureService } from '../../services/unit-measure.service';
 import { UnitMeasure } from '../../interfaces/unit-measure.interface';
 
 @Component({
-  selector: 'app-manage-unit-measure',
+  selector: 'manage-unit-measure',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, NgxSpinnerModule],
   templateUrl: './manage-unit-measure.component.html'

@@ -14,6 +14,7 @@ import { SettingProduct } from './interfaces/setting-product.interface';
 import { ManageBrandComponent } from './components/manage-brand/manage-brand.component';
 import { ManageUnitMeasureComponent } from './components/manage-unit-measure/manage-unit-measure.component';
 import { TreeNodeComponent } from "./components/tree-node/tree-node.component";
+import { ProductDetailComponent } from './components/product-detail/product-detail.component';
 
 @Component({
   selector: 'app-product',
@@ -24,9 +25,8 @@ import { TreeNodeComponent } from "./components/tree-node/tree-node.component";
 export class ProductComponent {
   @ViewChild('filterName') filterName!: ElementRef;
 
-  public model: FormGroup;
   public paged: FormGroup;
-  public setting: SettingProduct;
+  public setting: {recordId: number,  lstBrand: any[],  lstUnitMeasure: any[]};
   public table: Table;
 
   constructor(
@@ -36,14 +36,6 @@ export class ProductComponent {
     private formBuilder: FormBuilder,
     private service: ProductService
   ) {
-    this.model = this.formBuilder.group({
-      id: '',
-      name: ['', Validators.required],
-      alternativeCode: '',
-      category: this.formBuilder.group({ id: 1 }),
-      brand: this.formBuilder.group({ id: ['', Validators.required] }),
-      unitMeasure: this.formBuilder.group({ id: ['', Validators.required] })
-    })
 
     this.paged = this.formBuilder.group({
       pageSize: 10,
@@ -62,9 +54,6 @@ export class ProductComponent {
 
     this.setting = {
       recordId: 0,
-      operation: '',
-      onlyView: false,
-      mainScreen: false,
       lstBrand: [],
       lstUnitMeasure: []
     }
@@ -81,11 +70,12 @@ export class ProductComponent {
       content: [],
       lstColumn: [
         { name: 'N°', width: '5%', style: 'text-center' },
-        { name: 'CODIGO', width: '10%', style: 'text-center' },
-        { name: 'NOMBRE', width: '46%', style: 'text-left' },
-        { name: 'COD. ALTENATIVO', width: '15%', style: 'text-left' },
-        { name: 'MARCA', width: '12%', style: 'text-left' },
-        { name: 'UND. MEDIDA', width: '12%', style: 'text-left' }
+        { name: 'CODIGO', width: '7%', style: 'text-center' },
+        { name: 'NOMBRE', width: '40%', style: 'text-left' },
+        { name: 'SISTEMA', width: '20%', style: 'text-left' },
+        { name: 'COD. ALTENATIVO', width: '10%', style: 'text-left' },
+        { name: 'MARCA', width: '10%', style: 'text-left' },
+        { name: 'UND. MEDIDA', width: '8%', style: 'text-left' }
       ],
       lstPageSize: [
         { id: 10, name: '10' },
@@ -145,28 +135,31 @@ export class ProductComponent {
   }
 
   public create() {
-    this.setting.operation = 'NUEVO';
-    this.setting.mainScreen = true;
+    this.bsModalRef = this.bsModalService.show(ProductDetailComponent, { class: 'modal-xl-custom modal-dialog-custom', backdrop: 'static' })
+    this.bsModalRef.content.response.subscribe((response: any) => {
+      if (response != null) {
+
+      }
+    });
   }
 
   public update() {
-    this.setting.operation = 'MODIFICAR';
-    this.setting.mainScreen = true;
+
 
     let object: any = { id: this.setting.recordId };
 
-    this.spinner.show()
-    this.service.findById(object).subscribe({
-      next: (response) => {
-        if (response !== null && response.status == 'ok') {
-          this.model.patchValue(response.value)
-          this.model.get('id')?.setValue(this.pad(this.model.get('id')?.value, 4, 0))
-          this.spinner.hide()
-        } else
-          this.errorHandler(response.message);
-      },
-      error: (err) => { this.exceptionHandler(err) }
-    })
+    // this.spinner.show()
+    // this.service.findById(object).subscribe({
+    //   next: (response) => {
+    //     if (response !== null && response.status == 'ok') {
+    //       this.model.patchValue(response.value)
+    //       this.model.get('id')?.setValue(this.pad(this.model.get('id')?.value, 4, 0))
+    //       this.spinner.hide()
+    //     } else
+    //       this.errorHandler(response.message);
+    //   },
+    //   error: (err) => { this.exceptionHandler(err) }
+    // })
   }
 
   public delete() {
@@ -198,52 +191,6 @@ export class ProductComponent {
     })
   }
 
-  public save() {
-    if (this.model.valid) {
-      let object: Product = Object.assign({}, this.model.value)
-
-      object.id = object.id.toString() == '' ? 0 : object.id;
-      object.name = object.name.toUpperCase();
-      object.alternativeCode = object.alternativeCode.toUpperCase();
-
-      if (object.id == 0) {
-        this.spinner.show()
-        this.service.insert(object).subscribe({
-          next: (response) => {
-            if (response !== null && response.status == 'ok') {
-              this.model.get('id')?.setValue(this.pad(response.value, 4, 0))
-
-              let initialState: any = { tipo: 1, opcion: 1 }
-              this.bsModalRef = this.bsModalService.show(ModalMessageComponent, { initialState, backdrop: 'static', class: 'modal-dialog-custom' })
-              this.bsModalRef.content.response.subscribe(() => { this.exit(true) })
-              this.spinner.hide()
-            } else
-              this.errorHandler(response.message);
-          },
-          error: (err) => { this.exceptionHandler(err) }
-        })
-      } else {
-        this.spinner.show()
-        this.service.update(object).subscribe({
-          next: (response) => {
-            if (response !== null && response.status == 'ok') {
-              let initialState: any = { tipo: 1, opcion: 2 }
-              this.bsModalRef = this.bsModalService.show(ModalMessageComponent, { initialState, backdrop: 'static', class: 'modal-dialog-custom' })
-              this.bsModalRef.content.response.subscribe(() => { this.exit(true) })
-              this.spinner.hide()
-            } else
-              this.errorHandler(response.message);
-          },
-          error: (err) => { this.exceptionHandler(err) }
-        })
-      }
-    } else {
-      this.model.markAllAsTouched()
-      let initialState = { tipo: 3, opcion: 10 }
-      this.bsModalRef = this.bsModalService.show(ModalMessageComponent, { initialState, backdrop: 'static', class: 'modal-dialog-custom' })
-    }
-  }
-
   public manageBrand() {
     this.bsModalRef = this.bsModalService.show(ManageBrandComponent, { class: 'modal-lg modal-dialog-centered', backdrop: 'static' });
     this.bsModalRef.content.response.subscribe((response: any) => {
@@ -260,24 +207,6 @@ export class ProductComponent {
 
       }
     });
-  }
-
-  public exit(updatedRecord?: boolean) {
-    this.model.reset({
-      id: '',
-      name: '',
-      alternativeCode: '',
-      category: { id: 1 },
-      brand: { id: '' },
-      unitMeasure:{ id: '' }
-    });
-
-    this.setting.mainScreen = false;
-
-    if (updatedRecord) {
-      this.setting.recordId = 0;
-      this.search();
-    }
   }
 
   public selectRecord(record: any) {

@@ -27,16 +27,19 @@ import { TypeaheadMatch, TypeaheadModule } from 'ngx-bootstrap/typeahead';
 
 import { Response } from '../../shared/interfaces/response.interface';
 import { SupplierService } from '../supplier/services/supplier.service';
+import { AuthorizerService } from '../authorizer/services/authorizer.service';
 
 @Component({
   selector: 'app-purchase-order',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, NgxSpinnerModule, BsDatepickerModule, FormsModule, TypeaheadModule],
-  templateUrl: './purchase-order.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  templateUrl: './purchase-order.component.html'
 })
 export class PurchaseOrderComponent implements OnInit {
   @ViewChild('filterId') filterId!: ElementRef;
+  @ViewChild('proofPaymentTypeId') proofPaymentTypeId!: ElementRef;
+  @ViewChild('currencyId') currencyId!: ElementRef;
+  @ViewChild('authorizerName') authorizerName!: ElementRef;
   @ViewChild('chkIncludeTax') chkIncludeTax!: ElementRef;
 
   public model: FormGroup;
@@ -50,6 +53,11 @@ export class PurchaseOrderComponent implements OnInit {
   loadingSupplier?: boolean;
   noResultSupplier = false;
 
+  dataAuthorizer$?: Observable<Authorizer[]>;
+  errorAuthorizer?: string;
+  loadingAuthorizer?: boolean;
+  noResultAuthorizer = false;
+
   constructor(
     private bsModalService: BsModalService,
     private bsModalRef: BsModalRef,
@@ -57,7 +65,8 @@ export class PurchaseOrderComponent implements OnInit {
     private spinner: NgxSpinnerService,
     private formBuilder: FormBuilder,
     private service: PurchaseOrderService,
-    private supplierService: SupplierService
+    private supplierService: SupplierService,
+    private authorizerService: AuthorizerService
   ) {
     this.bsLocaleService.use('es');
 
@@ -67,8 +76,8 @@ export class PurchaseOrderComponent implements OnInit {
       purchaseDate: [moment().format('DD/MM/YYYY'), Validators.required],
       deliveryDate: [moment().format('DD/MM/YYYY'), Validators.required],
       observation: '',
-      creditDays: 0,
-      exchangeRate: 0,
+      creditDays: 1,
+      exchangeRate: 3.5,
       includeTax: 0,
       totalItems: 0,
       taxValue: 0,
@@ -188,6 +197,58 @@ export class PurchaseOrderComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.dataSupplier$ = new Observable((observer: Observer<string | undefined>) => {
+      observer.next(this.model.get('supplier')?.get('reasonSocial')?.value);
+    }).pipe(
+      switchMap((query: string) => {
+        if (query) {
+
+          let paged: Paged = {
+            pageSize: 20,
+            pageNumber: 1,
+            orderColumn: "supplier.reason_social",
+            order: "ASC",
+            lstFilter: [{ object: "supplier", column: "reason_social", value: query, operator: "like" }]
+          }
+          return this.supplierService.findByPagination(paged).pipe(
+            map((data: Response<Page>) => data && data.value.content || []),
+            tap({
+              next: x => { },
+              error: err => { this.errorSupplier = err && err.message || 'Error en la consulta'; }
+            })
+          );
+        }
+
+        return of([]);
+      })
+    );
+
+    this.dataAuthorizer$ = new Observable((observer: Observer<string | undefined>) => {
+      observer.next(this.model.get('authorizer')?.get('name')?.value);
+    }).pipe(
+      switchMap((query: string) => {
+        if (query) {
+
+          let paged: Paged = {
+            pageSize: 20,
+            pageNumber: 1,
+            orderColumn: "authorizer.name",
+            order: "ASC",
+            lstFilter: [{ object: "authorizer", column: "name", value: query, operator: "like" }]
+          }
+          return this.authorizerService.findByPagination(paged).pipe(
+            map((data: Response<Page>) => data && data.value.content || []),
+            tap({
+              next: x => { },
+              error: err => { this.errorAuthorizer = err && err.message || 'Error en la consulta'; }
+            })
+          );
+        }
+
+        return of([]);
+      })
+    );
+
     let object: Paged = Object.assign({}, this.paged.value);
     this.spinner.show();
     this.service.setting(object).subscribe({
@@ -211,34 +272,6 @@ export class PurchaseOrderComponent implements OnInit {
       },
       error: (err) => { this.exceptionHandler(err) }
     });
-
-    let paged: Paged = {
-      pageSize: 20,
-      pageNumber: 1,
-      orderColumn: "supplier.reason_social",
-      order: "ASC",
-      lstFilter: [{ object: "supplier", column: "reason_social", value: "", operator: "like" }]
-    }
-
-    this.dataSupplier$ = new Observable((observer: Observer<string | undefined>) => {
-      observer.next(this.model.get('supplier')?.get('reasonSocial')?.value);
-    }).pipe(
-      switchMap((query: string) => {
-        if (query) {
-          paged.lstFilter[0].value = query;
-
-          return this.supplierService.findByPagination(paged).pipe(
-            map((data: Response<Page>) => data && data.value.content || []),
-            tap({
-              next: x => { },
-              error: err => { this.errorSupplier = err && err.message || 'Error en la consulta'; }
-            })
-          );
-        }
-
-        return of([]);
-      })
-    );
   }
 
   public search() {
@@ -271,7 +304,9 @@ export class PurchaseOrderComponent implements OnInit {
     this.setting.operation = 'NUEVO';
     this.setting.mainScreen = true;
     this.setting.onlyView = false;
+
     this.tableMapper(this.model.get('lstPurchaseOrderDetail')?.value, this.table2);
+    setTimeout(() => { this.proofPaymentTypeId.nativeElement.focus(); }, 0);
   }
 
   public update() {
@@ -579,11 +614,11 @@ export class PurchaseOrderComponent implements OnInit {
       purchaseDate: moment().format('DD/MM/YYYY'),
       deliveryDate: moment().format('DD/MM/YYYY'),
       observation: '',
-      creditDays: 0,
+      creditDays: 1,
       includeTax: 0,
       totalItems: 0,
       taxValue: 0,
-      exchangeRate: 0,
+      exchangeRate: 3.5,
       saleValue: '0.00',
       salePrice: '0.00',
       saleTax: '0.00',
@@ -806,6 +841,24 @@ export class PurchaseOrderComponent implements OnInit {
   public onChangeCurrency() {
     let currency: Currency = this.getCurrency(this.model.get('currency')?.get('id')?.value);
     this.setting.currencyAcronym = currency.acronym;
+
+    if(this.model.get('currency')?.get('id')?.value == 1){
+      this.model.get('exchangeRate')?.setValidators(null);
+      this.model.get('exchangeRate')?.updateValueAndValidity();
+    }else{
+      this.model.get('exchangeRate')?.setValidators([Validators.required]);
+      this.model.get('exchangeRate')?.updateValueAndValidity();
+    }
+  }
+
+  public onChangePaymentMethod() {
+    if(this.model.get('paymentMethod')?.get('id')?.value == 1){
+      this.model.get('creditDays')?.setValidators(null);
+      this.model.get('creditDays')?.updateValueAndValidity();
+    }else{
+      this.model.get('creditDays')?.setValidators([Validators.required]);
+      this.model.get('creditDays')?.updateValueAndValidity();
+    }
   }
 
   public onChangeProofPaymentType() {
@@ -1010,24 +1063,46 @@ export class PurchaseOrderComponent implements OnInit {
   }
 
   onSelectSupplier(event: TypeaheadMatch<Supplier>): void {
-      let supplier: Supplier = event.item;
-      this.model.get('supplier')?.get('id')?.setValue(supplier.id);
-      this.model.get('supplier')?.get('ruc')?.setValue(supplier.ruc);
-      this.model.get('supplier')?.get('reasonSocial')?.setValue(supplier.reasonSocial);
-    }
+    let supplier: Supplier = event.item;
+    this.model.get('supplier')?.get('id')?.setValue(supplier.id);
+    this.model.get('supplier')?.get('ruc')?.setValue(supplier.ruc);
+    this.model.get('supplier')?.get('reasonSocial')?.setValue(supplier.reasonSocial);
+    this.authorizerName.nativeElement.focus();
+  }
 
-    onKeyDown(event: any) {
-      if (event.keyCode === 8 || event.keyCode === 46) {
-        this.model.get('supplier')?.get('id')?.setValue('');
-        this.model.get('supplier')?.get('ruc')?.setValue('');
-      }
+  onKeyDownSupplier(event: any) {
+    if (event.keyCode === 8 || event.keyCode === 46) {
+      this.model.get('supplier')?.get('id')?.setValue('');
+      this.model.get('supplier')?.get('ruc')?.setValue('');
     }
+  }
 
-    onLoadingSupplier(e: boolean): void {
-      this.loadingSupplier = e;
-    }
+  onLoadingSupplier(e: boolean): void {
+    this.loadingSupplier = e;
+  }
 
-    onNoResultsSupplier(event: boolean): void {
-      this.noResultSupplier = event;
+  onNoResultsSupplier(event: boolean): void {
+    this.noResultSupplier = event;
+  }
+
+  onSelectAuthorizer(event: TypeaheadMatch<Authorizer>): void {
+    let authorizer: Authorizer = event.item;
+    this.model.get('authorizer')?.get('id')?.setValue(authorizer.id);
+    this.model.get('authorizer')?.get('name')?.setValue(authorizer.name);
+    this.currencyId.nativeElement.focus();
+  }
+
+  onKeyDownAuthorizer(event: any) {
+    if (event.keyCode === 8 || event.keyCode === 46) {
+      this.model.get('authorizer')?.get('id')?.setValue('');
     }
+  }
+
+  onLoadingAuthorizer(e: boolean): void {
+    this.loadingAuthorizer = e;
+  }
+
+  onNoResultsAuthorizer(event: boolean): void {
+    this.noResultAuthorizer = event;
+  }
 }
